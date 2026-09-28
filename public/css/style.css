@@ -475,6 +475,71 @@ button, input, select, textarea {
     color: var(--color-text-muted);
 }
 
+/* Link discreto estilo texto */
+.link-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity 0.15s;
+}
+.link-btn:hover { opacity: 0.75; }
+
+/* Wrapper para input de senha + botão de visibilidade */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-input-wrapper .form-input {
+    width: 100%;
+    padding-right: 2.75rem;
+}
+.btn-toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s;
+}
+.btn-toggle-password:hover { color: var(--color-text-main); }
+
+/* Barra de força de senha */
+.password-strength {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.strength-track {
+    flex: 1;
+    height: 4px;
+    background: var(--color-border);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+.strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 9999px;
+    transition: width 0.35s ease, background 0.35s ease;
+}
+.password-strength span {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    min-width: 60px;
+    text-align: right;
+}
+
 /* ==========================================================================
    DASHBOARD LAYOUT & METRIC CARDS
    ========================================================================== */

@@ -1,0 +1,27 @@
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variáveis de ambiente e segredos locais (NUNCA COMMITAR)
+.env
+.env.render
+.env.local
+.env.production
+.env.*.local
+
+# Banco de dados local SQLite (evita sobrescrever dados locais ou comitar bases de desenvolvimento)
+# data/*.db
+# data/*.db-wal
+# data/*.db-shm
+
+# Logs
+logs/
+*.log
+
+# SO e IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

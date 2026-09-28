@@ -23,9 +23,15 @@ class DatabaseConnection {
     }
 
     init() {
+        // Configura timeout para evitar 'database is locked' sob concorrência
+        this.db.exec('PRAGMA busy_timeout = 5000;');
         // Ativa integridade referencial de chaves estrangeiras
         this.db.exec('PRAGMA foreign_keys = ON;');
-        this.db.exec('PRAGMA journal_mode = WAL;');
+        try {
+            this.db.exec('PRAGMA journal_mode = WAL;');
+        } catch (err) {
+            // Em caso de concorrência ou se já estiver em WAL, prossegue
+        }
 
         // Executa o script de inicialização do schema DDL
         const schemaPath = path.join(__dirname, '../database/schema.sql');

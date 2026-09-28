@@ -1,16 +1,54 @@
+# ====================================================================
+# Render Blueprint Specification (Infrastructure as Code - IaC)
+# Documentação oficial: https://render.com/docs/blueprint-spec
+# ====================================================================
+
 services:
   - type: web
-    name: nexus-projetos
-    env: node
+    name: projetocesinha-api
+    runtime: node
     plan: free
-    region: ohio
+    region: oregon
+    branch: main
     buildCommand: npm install
     startCommand: npm start
-    healthCheckPath: /
+    autoDeploy: true
+
+    # Variáveis de ambiente da aplicação
     envVars:
       - key: NODE_ENV
         value: production
+
+      # Chave JWT gerada automaticamente de forma criptograficamente segura pelo Render
       - key: JWT_SECRET
         generateValue: true
-      - key: DATABASE_URL
+
+      - key: JWT_EXPIRES_IN
+        value: 24h
+
+      # URL base da aplicação no Render (ex: https://projetocesinha-api.onrender.com)
+      - key: APP_URL
+        sync: false
+
+      # Credenciais do Supabase (fornecidas de forma segura no dashboard)
+      - key: SUPABASE_URL
+        sync: false
+
+      - key: SUPABASE_KEY
+        sync: false
+
+      # Configurações de SMTP para disparo de e-mails (opcional)
+      - key: SMTP_HOST
+        sync: false
+
+      - key: SMTP_PORT
+        value: "587"
+
+      - key: SMTP_SECURE
+        value: "false"
+
+      - key: SMTP_USER
+        sync: false
+
+      - key: SMTP_PASS
         sync: false

@@ -25,13 +25,13 @@ class AuthService {
         }
 
         const normalizedEmail = email.trim().toLowerCase();
-        const existing = this.userRepository.findByEmail(normalizedEmail);
+        const existing = await this.userRepository.findByEmail(normalizedEmail);
         if (existing) {
             throw new Error('Este e-mail já está cadastrado no sistema.');
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
-        const user = this.userRepository.create({
+        const user = await this.userRepository.create({
             name: name.trim(),
             email: normalizedEmail,
             passwordHash,
@@ -48,7 +48,7 @@ class AuthService {
         }
 
         const normalizedEmail = email.trim().toLowerCase();
-        const user = this.userRepository.findByEmail(normalizedEmail);
+        const user = await this.userRepository.findByEmail(normalizedEmail);
         if (!user) {
             throw new Error('Credenciais inválidas. Verifique seu e-mail e senha.');
         }

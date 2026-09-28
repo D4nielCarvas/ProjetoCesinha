@@ -164,6 +164,10 @@
                         id="btn-auth-submit">
                         Entrar no Sistema
                     </button>
+
+                    <div id="forgot-password-link-container" style="text-align:center; margin-top:0.75rem;">
+                        <button type="button" class="link-btn" id="btn-show-forgot">Esqueceu sua senha?</button>
+                    </div>
                 </form>
 
                 <div class="demo-account-box">
@@ -173,6 +177,103 @@
             </div>
         </section>
 
+        <!-- ====================================================================
+             TELA 1b: ESQUECI MINHA SENHA
+             ==================================================================== -->
+        <section id="forgot-password-view" class="auth-wrapper" style="display:none;">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="brand-icon" style="margin: 0 auto 1rem auto; width: 48px; height: 48px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" style="width: 26px; height: 26px;">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h2>Recuperar Acesso</h2>
+                    <p id="forgot-subtitle">Informe seu e-mail e enviaremos as instruções de recuperação.</p>
+                </div>
+
+                <form id="forgot-form">
+                    <div class="form-group">
+                        <label class="form-label" for="forgot-email">E-mail Cadastrado <span class="req">*</span></label>
+                        <input type="email" id="forgot-email" class="form-input"
+                            placeholder="seu.email@empresa.com" required autocomplete="email">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;"
+                        id="btn-forgot-submit">
+                        Enviar Instruções
+                    </button>
+                </form>
+
+                <div style="text-align:center; margin-top:1rem;">
+                    <button type="button" class="link-btn" id="btn-back-to-login">← Voltar ao Login</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====================================================================
+             TELA 1c: REDEFINIR SENHA (acesso via link no e-mail)
+             ==================================================================== -->
+        <section id="reset-password-view" class="auth-wrapper" style="display:none;">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="brand-icon" style="margin: 0 auto 1rem auto; width: 48px; height: 48px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"
+                            stroke-linejoin="round" style="width: 26px; height: 26px;">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h2>Nova Senha</h2>
+                    <p>Crie uma senha forte com no mínimo 6 caracteres.</p>
+                </div>
+
+                <form id="reset-form">
+                    <div class="form-group">
+                        <label class="form-label" for="reset-password">Nova Senha <span class="req">*</span></label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="reset-password" class="form-input"
+                                placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+                            <button type="button" class="btn-toggle-password" id="btn-toggle-reset-pw"
+                                aria-label="Mostrar senha">
+                                <svg id="icon-eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg id="icon-eye-closed" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" style="display:none">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="reset-password-confirm">Confirmar Senha <span class="req">*</span></label>
+                        <input type="password" id="reset-password-confirm" class="form-input"
+                            placeholder="Repita a senha" required autocomplete="new-password">
+                    </div>
+
+                    <div id="reset-strength-bar" class="password-strength" style="display:none;">
+                        <div class="strength-track"><div id="reset-strength-fill" class="strength-fill"></div></div>
+                        <span id="reset-strength-label"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.75rem;"
+                        id="btn-reset-submit">
+                        Salvar Nova Senha
+                    </button>
+                </form>
+
+                <div style="text-align:center; margin-top:1rem;">
+                    <button type="button" class="link-btn" id="btn-reset-back-login">← Voltar ao Login</button>
+                </div>
+            </div>
+        </section>
         <!-- ====================================================================
              TELA 2: DASHBOARD PRINCIPAL
              ==================================================================== -->

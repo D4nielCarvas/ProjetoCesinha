@@ -1,25 +1,46 @@
 const errorHandler = (err, req, res, next) => {
     console.error(`[API Error] ${req.method} ${req.originalUrl}:`, err.message);
 
-    // Erros conhecidos de validação / regras de negócio
-    const clientErrors = [
+    if (err.status) {
+        return res.status(err.status).json({
+            success: false,
+            error: err.message || 'Erro no servidor.',
+            ...(process.env.NODE_ENV === 'development' ? { stack: err.stack } : {})
+        });
+    }
+
+    const msg = (err.message || '').toLowerCase();
+
+    // 401 Unauthorized: Falhas diretas de credenciais e sessão
+    if (msg.includes('credenciais') || msg.includes('não autorizado') || msg.includes('sessão expirada')) {
+        return res.status(401).json({
+            success: false,
+            error: err.message
+        });
+    }
+
+    // 400 Bad Request: Validações de entrada, regras de negócio e recursos não autorizados/não encontrados
+    const clientKeywords = [
         'obrigatório',
         'inválid',
+        'cadastrado',
         'não encontrado',
-        'já cadastrado',
         'permissão',
         'conter no mínimo',
-        'posterior à Previsão',
-        'pelo menos'
+        'posterior à previsão',
+        'pelo menos',
+        'expirou',
+        'já utilizado'
     ];
 
-    const isClientError = clientErrors.some(keyword => 
-        err.message && err.message.toLowerCase().includes(keyword.toLowerCase())
-    );
+    if (clientKeywords.some(kw => msg.includes(kw))) {
+        return res.status(400).json({
+            success: false,
+            error: err.message
+        });
+    }
 
-    const statusCode = err.status || (isClientError ? 400 : 500);
-
-    return res.status(statusCode).json({
+    return res.status(500).json({
         success: false,
         error: err.message || 'Erro interno no servidor.',
         ...(process.env.NODE_ENV === 'development' ? { stack: err.stack } : {})
@@ -27,3 +48,4 @@ const errorHandler = (err, req, res, next) => {
 };
 
 module.exports = errorHandler;
+

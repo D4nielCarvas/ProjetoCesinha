@@ -12,6 +12,14 @@ try {
     process.exit(1);
 }
 
+// Diagnóstico de conexão com Supabase
+const { isSupabaseConfigured } = require('./config/supabase');
+if (isSupabaseConfigured()) {
+    console.log('[Supabase] Cliente de nuvem configurado e ativo.');
+} else {
+    console.warn('[Supabase Warning] Credenciais ausentes. Operando exclusivamente em modo SQLite local.');
+}
+
 const server = app.listen(PORT, () => {
     console.log(`=======================================================`);
     console.log(`🚀 Sistema de Gestão de Projetos rodando na porta ${PORT}`);

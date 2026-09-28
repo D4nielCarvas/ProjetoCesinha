@@ -15,6 +15,19 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
+-- Tokens de recuperação de senha (expiram em 1 hora)
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    token VARCHAR(128) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    used INTEGER NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_reset_tokens_token ON password_reset_tokens(token);
+
 CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -92,10 +105,30 @@ CREATE TYPE project_type_enum AS ENUM ('Interno', 'Parceiro');
 CREATE TYPE project_status_enum AS ENUM ('Pendente', 'Em Andamento', 'Concluído', 'Cancelado');
 CREATE TYPE activity_status_enum AS ENUM ('Pendente', 'Em Andamento', 'Concluída');
 
--- 2. Tabela de Projetos associada ao schema auth do Supabase
+-- 2. Tabela de Usuários da Aplicação (public.users)
+CREATE TABLE IF NOT EXISTS public.users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'user',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+-- 3. Tabela de Tokens de Recuperação de Senha (expiram em 1 hora)
+CREATE TABLE IF NOT EXISTS public.password_reset_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+    token VARCHAR(128) NOT NULL UNIQUE,
+    expires_at TIMESTAMPTZ NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+-- 4. Tabela de Projetos associada aos usuários
 CREATE TABLE IF NOT EXISTS public.projects (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     project_date DATE NOT NULL DEFAULT CURRENT_DATE,
     classification project_classification_enum NOT NULL,
@@ -113,7 +146,7 @@ CREATE TABLE IF NOT EXISTS public.projects (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
--- 3. Tabela de Atividades do Cronograma (1:N)
+-- 5. Tabela de Atividades do Cronograma (1:N)
 CREATE TABLE IF NOT EXISTS public.project_activities (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     project_id UUID NOT NULL REFERENCES public.projects(id) ON DELETE CASCADE,
@@ -123,7 +156,7 @@ CREATE TABLE IF NOT EXISTS public.project_activities (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
--- 4. Tabela de Responsáveis por Projeto (1:N)
+-- 6. Tabela de Responsáveis por Projeto (1:N)
 CREATE TABLE IF NOT EXISTS public.project_responsibles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     project_id UUID NOT NULL REFERENCES public.projects(id) ON DELETE CASCADE,
@@ -133,7 +166,7 @@ CREATE TABLE IF NOT EXISTS public.project_responsibles (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
--- 5. Tabela de Locais por Projeto (1:N)
+-- 7. Tabela de Locais por Projeto (1:N)
 CREATE TABLE IF NOT EXISTS public.project_locations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     project_id UUID NOT NULL REFERENCES public.projects(id) ON DELETE CASCADE,
@@ -141,7 +174,10 @@ CREATE TABLE IF NOT EXISTS public.project_locations (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
--- 6. Índices B-Tree para alta performance em filtros e junções
+-- 8. Índices B-Tree para alta performance em filtros e junções
+CREATE INDEX IF NOT EXISTS idx_pg_users_email ON public.users(email);
+CREATE INDEX IF NOT EXISTS idx_pg_reset_tokens_token ON public.password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_pg_reset_tokens_user_id ON public.password_reset_tokens(user_id);
 CREATE INDEX IF NOT EXISTS idx_pg_projects_user_id ON public.projects(user_id);
 CREATE INDEX IF NOT EXISTS idx_pg_projects_classification ON public.projects(classification);
 CREATE INDEX IF NOT EXISTS idx_pg_projects_type ON public.projects(type);
@@ -152,11 +188,28 @@ CREATE INDEX IF NOT EXISTS idx_pg_activities_target_date ON public.project_activ
 CREATE INDEX IF NOT EXISTS idx_pg_responsibles_project_id ON public.project_responsibles(project_id);
 CREATE INDEX IF NOT EXISTS idx_pg_locations_project_id ON public.project_locations(project_id);
 
--- 7. Ativação de Row Level Security (RLS) - Isolamento Multi-tenant
+-- 9. Ativação de Row Level Security (RLS) - Isolamento Multi-tenant
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.password_reset_tokens ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.project_activities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.project_responsibles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.project_locations ENABLE ROW LEVEL SECURITY;
+
+-- Políticas de Acesso para Users
+CREATE POLICY "Usuários consultam seu próprio perfil"
+ON public.users FOR SELECT
+USING (auth.uid() = id);
+
+CREATE POLICY "Usuários atualizam seu próprio perfil"
+ON public.users FOR UPDATE
+USING (auth.uid() = id)
+WITH CHECK (auth.uid() = id);
+
+-- Políticas de Acesso para Password Reset Tokens
+CREATE POLICY "Usuários consultam seus próprios tokens de recuperação"
+ON public.password_reset_tokens FOR SELECT
+USING (auth.uid() = user_id);
 
 -- Políticas de Acesso: Cada usuário só gerencia seus próprios dados
 CREATE POLICY "Usuários gerenciam seus próprios projetos"
