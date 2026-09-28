@@ -15,7 +15,8 @@ const state = {
         search: ''
     },
     editingProjectId: null,
-    currentDetailProject: null
+    currentDetailProject: null,
+    currentActivitiesProjectId: null
 };
 
 // ==========================================================================
@@ -46,16 +47,17 @@ const ThemeManager = {
     },
 
     updateIcon(theme) {
+        const isLight = theme === this.LIGHT;
+        document.querySelectorAll('.theme-icon-dark').forEach(icon => {
+            icon.style.display = isLight ? 'block' : 'none';
+        });
+        document.querySelectorAll('.theme-icon-light').forEach(icon => {
+            icon.style.display = isLight ? 'none' : 'block';
+        });
         const iconDark = document.getElementById('theme-icon-dark');
         const iconLight = document.getElementById('theme-icon-light');
-        if (!iconDark || !iconLight) return;
-        if (theme === this.LIGHT) {
-            iconDark.style.display = 'block';
-            iconLight.style.display = 'none';
-        } else {
-            iconDark.style.display = 'none';
-            iconLight.style.display = 'block';
-        }
+        if (iconDark) iconDark.style.display = isLight ? 'block' : 'none';
+        if (iconLight) iconLight.style.display = isLight ? 'none' : 'block';
     },
 
     init() {
@@ -250,15 +252,27 @@ function renderProjectsGrid() {
                 </div>
 
                 <div class="card-actions">
-                    <button class="btn btn-secondary btn-sm" onclick="openProjectDetailsModal(${project.id})">
-                        Ver Detalhes
-                    </button>
-                    <div style="display: flex; gap: 0.4rem;">
-                        <button class="btn btn-secondary btn-sm" onclick="openEditProjectModal(${project.id})" title="Editar Projeto">
-                            Editar
+                    <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                        <button class="btn btn-secondary btn-sm" onclick="openProjectDetailsModal(${project.id})" title="Ver Detalhes do Projeto">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            <span>Detalhes</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="openProjectActivitiesModal(${project.id})" title="Visualizar e Editar Etapas">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                            <span>Etapas</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="exportProjectToPdf(${project.id})" title="Exportar Projeto em PDF">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                            <span>PDF</span>
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 0.35rem; margin-left: auto;">
+                        <button class="btn btn-secondary btn-sm" onclick="openEditProjectModal(${project.id})" title="Editar Projeto Completo">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            <span>Editar</span>
                         </button>
                         <button class="btn btn-danger btn-sm" onclick="confirmDeleteProject(${project.id}, '${escapeHtml(project.name)}')" title="Excluir Projeto">
-                            Excluir
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -512,28 +526,48 @@ async function openProjectDetailsModal(projectId) {
             </div>
         `;
 
-        // Informações de responsáveis
+        // Informações de responsáveis com cards dedicados e dados de contato organizados
         const respList = document.getElementById('details-resp-list');
         const responsibles = project.responsibles && project.responsibles.length > 0
             ? project.responsibles
             : [{ name: project.responsible_name, email: project.responsible_email, phone: project.responsible_phone }];
-        respList.innerHTML = responsibles.map((r, i) => `
-            <div style="margin-bottom: ${i < responsibles.length - 1 ? '0.6rem' : '0'}; padding-bottom: ${i < responsibles.length - 1 ? '0.6rem' : '0'}; border-bottom: ${i < responsibles.length - 1 ? '1px solid var(--color-border)' : 'none'}">
-                <div style="font-weight: 600; font-size: 0.92rem;">${escapeHtml(r.name)}</div>
-                <div style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.15rem;">
-                    <a href="mailto:${escapeHtml(r.email)}" style="color: var(--color-primary-500); text-decoration: underline;">${escapeHtml(r.email)}</a>
-                    ${r.phone ? ' &bull; ' + escapeHtml(r.phone) : ''}
-                </div>
-            </div>
-        `).join('');
 
-        // Informações de locais
+        respList.innerHTML = responsibles.map(r => {
+            const initials = r.name ? r.name.trim().split(/\s+/).map(n => n[0]).slice(0, 2).join('').toUpperCase() : 'R';
+            return `
+                <div class="resp-detail-card">
+                    <div class="resp-avatar-badge">${initials}</div>
+                    <div class="resp-info-block">
+                        <div class="resp-name-title">${escapeHtml(r.name || 'Responsável não informado')}</div>
+                        <div class="resp-contact-items">
+                            ${r.email ? `
+                                <div class="resp-contact-pill">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                    <a href="mailto:${escapeHtml(r.email)}" title="Enviar e-mail">${escapeHtml(r.email)}</a>
+                                </div>
+                            ` : ''}
+                            ${r.phone ? `
+                                <div class="resp-contact-pill">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                    <span>${escapeHtml(r.phone)}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // Informações de locais com badges
         const locList = document.getElementById('details-location-list');
         const locations = project.locations && project.locations.length > 0
             ? project.locations
             : [{ name: project.location }];
-        locList.innerHTML = locations.map((l, i) => `
-            <div style="font-size: 0.92rem; font-weight: 500; margin-bottom: ${i < locations.length - 1 ? '0.35rem' : '0'};">📍 ${escapeHtml(l.name)}</div>
+        locList.innerHTML = locations.map(l => `
+            <div class="location-badge-item">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>${escapeHtml(l.name)}</span>
+            </div>
         `).join('');
 
         // Período
@@ -581,6 +615,350 @@ function renderDetailsTimeline(project) {
 function closeDetailsModal() {
     document.getElementById('details-modal-overlay').classList.remove('active');
     state.currentDetailProject = null;
+}
+
+// ==========================================================================
+// MODAL DE VISUALIZAR E EDITAR ETAPAS (CRONOGRAMA)
+// ==========================================================================
+async function openProjectActivitiesModal(projectId) {
+    try {
+        const project = await api.getProjectById(projectId);
+        if (!project) throw new Error('Projeto não encontrado.');
+
+        state.currentActivitiesProjectId = projectId;
+        document.getElementById('activities-modal-project-name').textContent = project.name;
+
+        const activities = project.activities || [];
+        const completedCount = activities.filter(a => a.status === 'Concluída').length;
+        const totalCount = activities.length;
+        const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : (project.status === 'Concluído' ? 100 : 0);
+
+        document.getElementById('activities-progress-label').textContent = `${completedCount} de ${totalCount} etapas concluídas`;
+        document.getElementById('activities-progress-percent').textContent = `${percent}%`;
+        document.getElementById('activities-progress-fill').style.width = `${percent}%`;
+
+        const container = document.getElementById('activities-modal-rows');
+        container.innerHTML = '';
+
+        if (activities.length === 0) {
+            addActivityModalRow();
+        } else {
+            activities.forEach((act) => {
+                addActivityModalRow(act.description, act.target_date, act.status);
+            });
+        }
+
+        document.getElementById('activities-modal-overlay').classList.add('active');
+    } catch (error) {
+        Toast.show(error.message, 'error');
+    }
+}
+
+function closeProjectActivitiesModal() {
+    document.getElementById('activities-modal-overlay').classList.remove('active');
+    state.currentActivitiesProjectId = null;
+}
+
+function addActivityModalRow(desc = '', date = '', status = 'Pendente') {
+    const container = document.getElementById('activities-modal-rows');
+    const index = container.children.length + 1;
+    const row = document.createElement('div');
+    row.className = 'activity-edit-row';
+    row.innerHTML = `
+        <div class="activity-index-badge">${index}</div>
+        <input type="text" class="form-input activity-modal-desc" placeholder="Descrição da etapa..." value="${escapeHtml(desc)}" required>
+        <input type="date" class="form-input activity-modal-date" value="${date}" required>
+        <select class="form-select activity-modal-status">
+            <option value="Pendente" ${status === 'Pendente' ? 'selected' : ''}>Pendente</option>
+            <option value="Em Andamento" ${status === 'Em Andamento' ? 'selected' : ''}>Em Andamento</option>
+            <option value="Concluída" ${status === 'Concluída' ? 'selected' : ''}>Concluída</option>
+        </select>
+        <button type="button" class="btn-remove-step" title="Remover Etapa">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+        </button>
+    `;
+
+    row.querySelector('.btn-remove-step').addEventListener('click', () => {
+        container.removeChild(row);
+        Array.from(container.children).forEach((r, i) => {
+            const badge = r.querySelector('.activity-index-badge');
+            if (badge) badge.textContent = i + 1;
+        });
+    });
+
+    container.appendChild(row);
+}
+
+async function saveProjectActivitiesModal() {
+    if (!state.currentActivitiesProjectId) return;
+    const projectId = state.currentActivitiesProjectId;
+    const rows = document.querySelectorAll('#activities-modal-rows .activity-edit-row');
+    const activities = [];
+
+    rows.forEach(row => {
+        const desc = row.querySelector('.activity-modal-desc').value.trim();
+        const date = row.querySelector('.activity-modal-date').value;
+        const status = row.querySelector('.activity-modal-status').value;
+        if (desc && date) {
+            activities.push({ description: desc, target_date: date, status });
+        }
+    });
+
+    if (activities.length === 0) {
+        Toast.show('O cronograma deve possuir pelo menos uma etapa com descrição e data.', 'warning');
+        return;
+    }
+
+    try {
+        const project = await api.getProjectById(projectId);
+        const payload = {
+            name: project.name,
+            classification: project.classification,
+            type: project.type,
+            date: project.date,
+            start_date: project.start_date,
+            end_date: project.end_date,
+            objective: project.objective,
+            evaluation_analysis: project.evaluation_analysis,
+            responsibles: project.responsibles || [{ name: project.responsible_name, email: project.responsible_email, phone: project.responsible_phone }],
+            locations: project.locations ? project.locations.map(l => l.name) : [project.location],
+            activities: activities
+        };
+
+        await api.updateProject(projectId, payload);
+        Toast.show('Etapas do cronograma atualizadas com sucesso!', 'success');
+        closeProjectActivitiesModal();
+
+        // Se o modal de detalhes estiver aberto, atualiza-o
+        if (state.currentDetailProject && state.currentDetailProject.id === projectId) {
+            openProjectDetailsModal(projectId);
+        }
+        loadDashboard();
+    } catch (error) {
+        Toast.show(error.message, 'error');
+    }
+}
+
+// ==========================================================================
+// EXPORTAÇÃO DO PROJETO EM PDF
+// ==========================================================================
+async function exportProjectToPdf(projectId) {
+    try {
+        const project = await api.getProjectById(projectId);
+        if (!project) throw new Error('Projeto não encontrado para exportação.');
+
+        const deadline = project.deadline_info || {};
+        const activities = project.activities || [];
+        const responsibles = project.responsibles && project.responsibles.length > 0
+            ? project.responsibles
+            : [{ name: project.responsible_name, email: project.responsible_email, phone: project.responsible_phone }];
+        const locations = project.locations && project.locations.length > 0
+            ? project.locations
+            : [{ name: project.location }];
+
+        const completedCount = activities.filter(a => a.status === 'Concluída').length;
+        const totalCount = activities.length;
+        const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : (project.status === 'Concluído' ? 100 : 0);
+
+        const startDateFmt = project.start_date ? project.start_date.split('-').reverse().join('/') : '-';
+        const endDateFmt = project.end_date ? project.end_date.split('-').reverse().join('/') : '-';
+        const emissionDate = new Date().toLocaleString('pt-BR');
+
+        // Cria iframe temporário para gerar impressão sem afetar o layout
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+        document.body.appendChild(iframe);
+
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+            <!DOCTYPE html>
+            <html lang="pt-BR">
+            <head>
+                <meta charset="UTF-8">
+                <title>Relatório do Projeto - ${escapeHtml(project.name)}</title>
+                <style>
+                    @page { size: A4; margin: 15mm; }
+                    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+                    body { color: #1e293b; background: #ffffff; font-size: 11pt; line-height: 1.45; }
+                    
+                    .header { border-bottom: 2px solid #4f46e5; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; }
+                    .brand { font-size: 16pt; font-weight: 800; color: #1e293b; }
+                    .brand span { color: #4f46e5; }
+                    .emission-meta { font-size: 8.5pt; color: #64748b; text-align: right; }
+
+                    .title-section { margin-bottom: 16px; }
+                    .project-title { font-size: 16pt; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+                    .tag-row { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
+                    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 8pt; font-weight: 700; text-transform: uppercase; }
+                    .badge-indigo { background: #e0e7ff; color: #3730a3; }
+                    .badge-sky { background: #e0f2fe; color: #0369a1; }
+                    .badge-danger { background: #fee2e2; color: #991b1b; }
+                    .badge-warning { background: #fef3c7; color: #92400e; }
+                    .badge-success { background: #d1fae5; color: #065f46; }
+                    .badge-info { background: #e0f2fe; color: #075985; }
+
+                    .deadline-box { background: #f8fafc; border-left: 4px solid #6366f1; padding: 8px 12px; border-radius: 4px; font-size: 9.5pt; margin-bottom: 16px; }
+                    .deadline-box.atrasado { border-left-color: #ef4444; background: #fef2f2; color: #991b1b; }
+                    .deadline-box.alerta { border-left-color: #f59e0b; background: #fffbeb; color: #92400e; }
+                    .deadline-box.concluido { border-left-color: #10b981; background: #ecfdf5; color: #065f46; }
+
+                    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+                    .info-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 12px; }
+                    .info-card h4 { font-size: 8.5pt; text-transform: uppercase; color: #64748b; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.03em; }
+                    .info-card p { font-size: 9.5pt; color: #1e293b; }
+
+                    .resp-item { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px dashed #cbd5e1; }
+                    .resp-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+                    .resp-item strong { font-size: 9.5pt; color: #0f172a; }
+                    .resp-sub { font-size: 8.5pt; color: #475569; }
+
+                    .progress-box { margin-bottom: 16px; }
+                    .progress-header { display: flex; justify-content: space-between; font-size: 8.5pt; font-weight: 700; margin-bottom: 4px; }
+                    .progress-bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+                    .progress-bar-fill { height: 100%; background: #4f46e5; border-radius: 4px; width: ${percent}%; }
+
+                    .section-heading { font-size: 11pt; font-weight: 700; color: #0f172a; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 9pt; }
+                    th { background: #f1f5f9; color: #475569; font-weight: 700; text-align: left; padding: 6px 8px; border: 1px solid #cbd5e1; }
+                    td { padding: 6px 8px; border: 1px solid #e2e8f0; color: #1e293b; }
+                    tr:nth-child(even) { background: #f8fafc; }
+
+                    .signature-section { margin-top: 35px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; page-break-inside: avoid; }
+                    .sig-line { border-top: 1px solid #94a3b8; text-align: center; padding-top: 6px; font-size: 8.5pt; color: #475569; }
+
+                    @media print {
+                        body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <div class="brand">Nexus<span>Projetos</span></div>
+                    <div class="emission-meta">
+                        <div>Relatório Técnico de Projeto</div>
+                        <div>Emitido em: ${emissionDate}</div>
+                    </div>
+                </div>
+
+                <div class="title-section">
+                    <h1 class="project-title">${escapeHtml(project.name)}</h1>
+                    <div class="tag-row">
+                        <span class="badge badge-indigo">${escapeHtml(project.classification)}</span>
+                        <span class="badge badge-sky">${escapeHtml(project.type)}</span>
+                        <span class="badge badge-${deadline.badgeColor}">${escapeHtml(deadline.label)}</span>
+                    </div>
+                    <div class="deadline-box ${deadline.status}">
+                        <strong>Situação do Prazo:</strong> ${escapeHtml(deadline.message)}
+                    </div>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h4>Responsável(eis) pelo Projeto</h4>
+                        ${responsibles.map(r => `
+                            <div class="resp-item">
+                                <div><strong>${escapeHtml(r.name || 'Não informado')}</strong></div>
+                                <div class="resp-sub">${escapeHtml(r.email || '-')}${r.phone ? ' &bull; ' + escapeHtml(r.phone) : ''}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="info-card">
+                        <h4>Local(ais) e Período de Execução</h4>
+                        <p style="margin-bottom: 6px;"><strong>Locais:</strong> ${locations.map(l => escapeHtml(l.name)).join(', ')}</p>
+                        <p><strong>Período:</strong> ${startDateFmt} até ${endDateFmt}</p>
+                    </div>
+                </div>
+
+                <div class="info-card" style="margin-bottom: 16px;">
+                    <h4>Objetivo do Projeto</h4>
+                    <p>${escapeHtml(project.objective)}</p>
+                </div>
+
+                ${project.evaluation_analysis ? `
+                <div class="info-card" style="margin-bottom: 16px;">
+                    <h4>Critérios de Avaliação e Análise</h4>
+                    <p>${escapeHtml(project.evaluation_analysis)}</p>
+                </div>
+                ` : ''}
+
+                <div class="progress-box">
+                    <div class="progress-header">
+                        <span>Progresso do Cronograma</span>
+                        <span>${completedCount} de ${totalCount} etapas concluídas (${percent}%)</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                </div>
+
+                <div class="section-heading">Cronograma Detalhado de Etapas</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 35px; text-align: center;">#</th>
+                            <th>Descrição da Etapa</th>
+                            <th style="width: 100px; text-align: center;">Previsão</th>
+                            <th style="width: 110px; text-align: center;">Status</th>
+                            <th style="width: 120px; text-align: center;">Situação Prazo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${activities.length > 0 ? activities.map((act, idx) => {
+                            const actDate = act.target_date ? act.target_date.split('-').reverse().join('/') : '-';
+                            const actDeadline = act.deadline_info || {};
+                            return `
+                                <tr>
+                                    <td style="text-align: center; font-weight: bold;">${idx + 1}</td>
+                                    <td>${escapeHtml(act.description)}</td>
+                                    <td style="text-align: center;">${actDate}</td>
+                                    <td style="text-align: center;"><strong>${escapeHtml(act.status)}</strong></td>
+                                    <td style="text-align: center;">${escapeHtml(actDeadline.label || '-')}</td>
+                                </tr>
+                            `;
+                        }).join('') : `
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #64748b; padding: 12px;">Nenhuma etapa cadastrada neste cronograma.</td>
+                            </tr>
+                        `}
+                    </tbody>
+                </table>
+
+                <div class="signature-section">
+                    <div class="sig-line">
+                        <strong>${escapeHtml(responsibles[0]?.name || 'Responsável Técnico')}</strong>
+                        <div>Assinatura do Responsável</div>
+                    </div>
+                    <div class="sig-line">
+                        <strong>Nexus Projetos - Sistema de Gestão</strong>
+                        <div>Validação e Controle Operacional</div>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `);
+        doc.close();
+
+        setTimeout(() => {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 1000);
+        }, 300);
+
+    } catch (error) {
+        Toast.show('Erro ao exportar PDF: ' + error.message, 'error');
+    }
 }
 
 async function confirmDeleteProject(projectId, projectName) {
@@ -682,11 +1060,10 @@ function bindGlobalEvents() {
     document.getElementById('btn-add-responsible-row').addEventListener('click', () => addResponsibleRow());
     document.getElementById('btn-add-location-row').addEventListener('click', () => addLocationRow());
 
-    // 6b. Theme Toggle
-    const btnTheme = document.getElementById('btn-toggle-theme');
-    if (btnTheme) {
-        btnTheme.addEventListener('click', () => ThemeManager.toggle());
-    }
+    // 6b. Theme Toggle (sincroniza todos os botões de alternância)
+    document.querySelectorAll('.btn-theme-toggle').forEach(btn => {
+        btn.addEventListener('click', () => ThemeManager.toggle());
+    });
 
     // Máscara dinâmica para o telefone (legado — mantida por compatibilidade com futuras versões)
     // A máscara agora é aplicada individualmente em cada linha de responsável via addResponsibleRow()
@@ -770,6 +1147,25 @@ function bindGlobalEvents() {
             openEditProjectModal(id);
         }
     });
+
+    // 8b. Botões de PDF e Gestão de Etapas no Modal de Detalhes
+    document.getElementById('btn-export-pdf-details').addEventListener('click', () => {
+        if (state.currentDetailProject) {
+            exportProjectToPdf(state.currentDetailProject.id);
+        }
+    });
+
+    document.getElementById('btn-quick-manage-activities').addEventListener('click', () => {
+        if (state.currentDetailProject) {
+            openProjectActivitiesModal(state.currentDetailProject.id);
+        }
+    });
+
+    // 8c. Controles do Modal de Etapas
+    document.getElementById('btn-close-activities-modal').addEventListener('click', closeProjectActivitiesModal);
+    document.getElementById('btn-cancel-activities-modal').addEventListener('click', closeProjectActivitiesModal);
+    document.getElementById('btn-save-activities-modal').addEventListener('click', saveProjectActivitiesModal);
+    document.getElementById('btn-add-activity-modal-row').addEventListener('click', () => addActivityModalRow());
 
     // 9. Filters & Debounced Search
     const searchInput = document.getElementById('filter-search');

@@ -5,7 +5,7 @@ class TimelineComponent {
     static render(projectId, activities = [], onStatusChangeCallback = null) {
         if (!activities || activities.length === 0) {
             return `
-                <div style="padding: 1.5rem; text-align: center; color: var(--color-text-muted); background: rgba(15, 23, 42, 0.4); border-radius: var(--radius-md);">
+                <div style="padding: 1.5rem; text-align: center; color: var(--color-text-muted); background: var(--color-bg-card-nested); border: 1px dashed var(--color-border); border-radius: var(--radius-md);">
                     Nenhuma etapa cadastrada no cronograma deste projeto.
                 </div>
             `;

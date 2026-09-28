@@ -46,6 +46,26 @@
     --color-info-bg: rgba(14, 165, 233, 0.14);
     --color-info-border: rgba(14, 165, 233, 0.35);
 
+    /* Cores de Texto Semântico para Badges, Alertas e Tags */
+    --color-badge-danger-text: #fca5a5;
+    --color-badge-warning-text: #fcd34d;
+    --color-badge-info-text: #7dd3fc;
+    --color-badge-success-text: #6ee7b7;
+
+    --color-tag-classification-text: #a5b4fc;
+    --color-tag-classification-bg: rgba(99, 102, 241, 0.15);
+    --color-tag-classification-border: rgba(99, 102, 241, 0.3);
+
+    --color-tag-type-text: #7dd3fc;
+    --color-tag-type-bg: rgba(14, 165, 233, 0.15);
+    --color-tag-type-border: rgba(14, 165, 233, 0.3);
+
+    --color-btn-danger-text: #fca5a5;
+    --color-auth-bg-radial: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
+    --color-metric-icon-bg: rgba(255, 255, 255, 0.05);
+    --color-metric-icon-border: transparent;
+    --color-empty-state-bg: var(--color-bg-surface);
+
     /* Tipografia e Fontes */
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-heading: 'Plus Jakarta Sans', var(--font-sans);
@@ -112,6 +132,26 @@
     --color-info: #0284c7;
     --color-info-bg: rgba(2, 132, 199, 0.1);
     --color-info-border: rgba(2, 132, 199, 0.25);
+
+    /* Cores de Texto Semântico para Badges, Alertas e Tags no Modo Claro */
+    --color-badge-danger-text: #b91c1c;
+    --color-badge-warning-text: #b45309;
+    --color-badge-info-text: #0369a1;
+    --color-badge-success-text: #047857;
+
+    --color-tag-classification-text: #4338ca;
+    --color-tag-classification-bg: rgba(99, 102, 241, 0.1);
+    --color-tag-classification-border: rgba(99, 102, 241, 0.25);
+
+    --color-tag-type-text: #0369a1;
+    --color-tag-type-bg: rgba(14, 165, 233, 0.1);
+    --color-tag-type-border: rgba(14, 165, 233, 0.25);
+
+    --color-btn-danger-text: #dc2626;
+    --color-auth-bg-radial: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 65%);
+    --color-metric-icon-bg: rgba(99, 102, 241, 0.08);
+    --color-metric-icon-border: rgba(99, 102, 241, 0.18);
+    --color-empty-state-bg: #ffffff;
 
     /* Sombras Suaves e Elegantes */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
