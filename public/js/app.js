@@ -718,7 +718,7 @@ async function saveProjectActivitiesModal() {
             name: project.name,
             classification: project.classification,
             type: project.type,
-            projectDate: project.date,
+            projectDate: project.project_date,
             startDate: project.start_date,
             endDate: project.end_date,
             objective: project.objective,
