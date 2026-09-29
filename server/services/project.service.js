@@ -4,6 +4,7 @@ const ResponsibleRepository = require('../models/responsible.repository');
 const LocationRepository = require('../models/location.repository');
 const AlertService = require('./alert.service');
 const { getDatabaseHelper } = require('../config/database');
+const { isSupabaseConfigured } = require('../config/supabase');
 
 class ProjectService {
     constructor(
@@ -21,13 +22,16 @@ class ProjectService {
     }
 
     async getProjects(userId, filters = {}) {
-        const rawProjects = this.projectRepo.findAll(userId, filters);
+        // Supabase retorna Promises; SQLite retorna arrays síncronos
+        const rawProjects = await Promise.resolve(this.projectRepo.findAll(userId, filters));
         const projectIds = rawProjects.map(p => p.id);
 
         // Carregamento em lote (Batch Loading O(1) queries para evitar o problema N+1)
-        const allActivities = this.activityRepo.findByProjectIds(projectIds);
-        const allResponsibles = this.responsibleRepo.findByProjectIds(projectIds);
-        const allLocations = this.locationRepo.findByProjectIds(projectIds);
+        const [allActivities, allResponsibles, allLocations] = await Promise.all([
+            Promise.resolve(this.activityRepo.findByProjectIds(projectIds)),
+            Promise.resolve(this.responsibleRepo.findByProjectIds(projectIds)),
+            Promise.resolve(this.locationRepo.findByProjectIds(projectIds))
+        ]);
 
         const activitiesByProject = new Map();
         const responsiblesByProject = new Map();
@@ -96,14 +100,16 @@ class ProjectService {
     }
 
     async getProjectById(id, userId) {
-        const project = this.projectRepo.findById(id, userId);
+        const project = await Promise.resolve(this.projectRepo.findById(id, userId));
         if (!project) {
             throw new Error('Projeto não encontrado ou você não tem permissão para acessá-lo.');
         }
 
-        const activities = this.activityRepo.findByProjectId(id);
-        const responsibles = this.responsibleRepo.findByProjectId(id);
-        const locations = this.locationRepo.findByProjectId(id);
+        const [activities, responsibles, locations] = await Promise.all([
+            Promise.resolve(this.activityRepo.findByProjectId(id)),
+            Promise.resolve(this.responsibleRepo.findByProjectId(id)),
+            Promise.resolve(this.locationRepo.findByProjectId(id))
+        ]);
 
         const enriched = AlertService.enrichProjectWithAlerts(project, activities);
         return {
@@ -127,6 +133,12 @@ class ProjectService {
         const primaryResp = data.responsibles[0];
         const primaryLoc = typeof data.locations[0] === 'string' ? data.locations[0] : data.locations[0].name;
 
+        // Se o Supabase estiver configurado, usa operações assíncronas diretas
+        if (isSupabaseConfigured()) {
+            return this._createProjectSupabase(userId, data, primaryResp, primaryLoc);
+        }
+
+        // Fallback: transação SQLite síncrona
         return this.dbHelper.transaction((client) => {
             const projectId = this.projectRepo.create({
                 userId,
@@ -145,13 +157,9 @@ class ProjectService {
                 status: data.status || 'Em Andamento'
             }, client);
 
-            // Persiste múltiplos responsáveis
             const createdResponsibles = this.responsibleRepo.createMany(projectId, data.responsibles, client);
-
-            // Persiste múltiplos locais
             const createdLocations = this.locationRepo.createMany(projectId, data.locations, client);
 
-            // Persiste etapas do cronograma
             let createdActivities = [];
             if (Array.isArray(data.activities) && data.activities.length > 0) {
                 createdActivities = this.activityRepo.createMany(projectId, data.activities, client);
@@ -167,10 +175,47 @@ class ProjectService {
         });
     }
 
+    async _createProjectSupabase(userId, data, primaryResp, primaryLoc) {
+        const projectId = await this.projectRepo.create({
+            userId,
+            name: data.name.trim(),
+            projectDate: data.projectDate,
+            classification: data.classification,
+            type: data.type,
+            responsibleName: primaryResp.name.trim(),
+            responsibleEmail: primaryResp.email.trim().toLowerCase(),
+            responsiblePhone: primaryResp.phone.trim(),
+            objective: data.objective.trim(),
+            location: primaryLoc.trim(),
+            startDate: data.startDate,
+            endDate: data.endDate,
+            evaluationAnalysis: data.evaluationAnalysis ? data.evaluationAnalysis.trim() : null,
+            status: data.status || 'Em Andamento'
+        });
+
+        const [createdResponsibles, createdLocations] = await Promise.all([
+            this.responsibleRepo.createMany(projectId, data.responsibles),
+            this.locationRepo.createMany(projectId, data.locations)
+        ]);
+
+        let createdActivities = [];
+        if (Array.isArray(data.activities) && data.activities.length > 0) {
+            createdActivities = await this.activityRepo.createMany(projectId, data.activities);
+        }
+
+        const rawProject = await this.projectRepo.findById(projectId, userId);
+        const enriched = AlertService.enrichProjectWithAlerts(rawProject, createdActivities);
+        return {
+            ...enriched,
+            responsibles: createdResponsibles,
+            locations: createdLocations
+        };
+    }
+
     async updateProject(id, userId, data) {
         this.validateProjectData(data);
 
-        const existing = this.projectRepo.findById(id, userId);
+        const existing = await Promise.resolve(this.projectRepo.findById(id, userId));
         if (!existing) {
             throw new Error('Projeto não encontrado ou você não possui permissão para alterá-lo.');
         }
@@ -178,6 +223,12 @@ class ProjectService {
         const primaryResp = data.responsibles[0];
         const primaryLoc = typeof data.locations[0] === 'string' ? data.locations[0] : data.locations[0].name;
 
+        // Se o Supabase estiver configurado, usa operações assíncronas diretas
+        if (isSupabaseConfigured()) {
+            return this._updateProjectSupabase(id, userId, data, primaryResp, primaryLoc, existing);
+        }
+
+        // Fallback: transação SQLite síncrona
         return this.dbHelper.transaction((client) => {
             this.projectRepo.update(id, userId, {
                 name: data.name.trim(),
@@ -195,19 +246,16 @@ class ProjectService {
                 status: data.status || existing.status
             }, client);
 
-            // Atualiza responsáveis
             if (Array.isArray(data.responsibles)) {
                 this.responsibleRepo.deleteByProjectId(id, client);
                 this.responsibleRepo.createMany(id, data.responsibles, client);
             }
 
-            // Atualiza locais
             if (Array.isArray(data.locations)) {
                 this.locationRepo.deleteByProjectId(id, client);
                 this.locationRepo.createMany(id, data.locations, client);
             }
 
-            // Se a lista de atividades foi informada, atualiza em bloco
             if (Array.isArray(data.activities)) {
                 this.activityRepo.deleteByProjectId(id, client);
                 this.activityRepo.createMany(id, data.activities, client);
@@ -227,8 +275,55 @@ class ProjectService {
         });
     }
 
+    async _updateProjectSupabase(id, userId, data, primaryResp, primaryLoc, existing) {
+        await this.projectRepo.update(id, userId, {
+            name: data.name.trim(),
+            projectDate: data.projectDate,
+            classification: data.classification,
+            type: data.type,
+            responsibleName: primaryResp.name.trim(),
+            responsibleEmail: primaryResp.email.trim().toLowerCase(),
+            responsiblePhone: primaryResp.phone.trim(),
+            objective: data.objective.trim(),
+            location: primaryLoc.trim(),
+            startDate: data.startDate,
+            endDate: data.endDate,
+            evaluationAnalysis: data.evaluationAnalysis ? data.evaluationAnalysis.trim() : null,
+            status: data.status || existing.status
+        });
+
+        if (Array.isArray(data.responsibles)) {
+            await this.responsibleRepo.deleteByProjectId(id);
+            await this.responsibleRepo.createMany(id, data.responsibles);
+        }
+
+        if (Array.isArray(data.locations)) {
+            await this.locationRepo.deleteByProjectId(id);
+            await this.locationRepo.createMany(id, data.locations);
+        }
+
+        if (Array.isArray(data.activities)) {
+            await this.activityRepo.deleteByProjectId(id);
+            await this.activityRepo.createMany(id, data.activities);
+        }
+
+        const [rawProject, activities, responsibles, locations] = await Promise.all([
+            this.projectRepo.findById(id, userId),
+            this.activityRepo.findByProjectId(id),
+            this.responsibleRepo.findByProjectId(id),
+            this.locationRepo.findByProjectId(id)
+        ]);
+
+        const enriched = AlertService.enrichProjectWithAlerts(rawProject, activities);
+        return {
+            ...enriched,
+            responsibles,
+            locations
+        };
+    }
+
     async deleteProject(id, userId) {
-        const existing = this.projectRepo.findById(id, userId);
+        const existing = await Promise.resolve(this.projectRepo.findById(id, userId));
         if (!existing) {
             throw new Error('Projeto não encontrado ou permissão negada.');
         }
@@ -236,7 +331,7 @@ class ProjectService {
     }
 
     async updateActivityStatus(activityId, projectId, userId, newStatus) {
-        const project = this.projectRepo.findById(projectId, userId);
+        const project = await Promise.resolve(this.projectRepo.findById(projectId, userId));
         if (!project) {
             throw new Error('Projeto não encontrado.');
         }
@@ -246,7 +341,7 @@ class ProjectService {
             throw new Error(`Status inválido. Escolha entre: ${validStatuses.join(', ')}`);
         }
 
-        const updated = this.activityRepo.updateStatus(activityId, projectId, newStatus);
+        const updated = await Promise.resolve(this.activityRepo.updateStatus(activityId, projectId, newStatus));
         if (!updated) {
             throw new Error('Etapa de atividade não encontrada neste projeto.');
         }
