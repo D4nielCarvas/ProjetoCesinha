@@ -454,16 +454,16 @@ button, input, select, textarea {
     align-items: center;
 }
 
-.auth-logo-img {
-    max-width: 260px;
-    height: auto;
-    max-height: 80px;
+.auth-logo-p {
+    width: 64px;
+    height: 64px;
     object-fit: contain;
-    border-radius: var(--radius-md);
-    background: #ffffff;
-    padding: 6px 12px;
-    box-shadow: var(--shadow-sm);
-    border: 1px solid var(--color-border);
+    filter: drop-shadow(0 6px 14px rgba(11, 70, 40, 0.35));
+    transition: transform var(--transition-normal);
+}
+
+.auth-logo-p:hover {
+    transform: scale(1.06);
 }
 
 .auth-header h2 {
