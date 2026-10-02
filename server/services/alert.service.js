@@ -34,10 +34,11 @@ class AlertService {
     /**
      * Avalia o status de prazo de um projeto (Estratégia de Prazos)
      * Regras:
-     * - Status Concluído -> 'concluido'
-     * - daysRemaining < 0 -> 'atrasado' (Alerta Crítico)
-     * - daysRemaining <= 7 -> 'alerta' (Proximidade Crítica: 0 a 7 dias)
-     * - daysRemaining > 7 -> 'no_prazo'
+     * - Status Concluído                  -> 'concluido'
+     * - hoje < start_date                 -> 'agendado'  (projeto ainda não iniciou)
+     * - hoje > end_date                   -> 'atrasado'  (Alerta Crítico)
+     * - daysToEnd <= 7 (projeto iniciado) -> 'alerta'    (Proximidade Crítica: 0 a 7 dias)
+     * - daysToEnd > 7                     -> 'no_prazo'
      */
     static evaluateProjectDeadline(project, baseDateStr = null) {
         if (project.status === 'Concluído') {
@@ -51,8 +52,8 @@ class AlertService {
             };
         }
 
-        const days = this.calculateDaysDifference(project.end_date || project.endDate, baseDateStr);
-        if (days === null) {
+        const daysToEnd = this.calculateDaysDifference(project.end_date || project.endDate, baseDateStr);
+        if (daysToEnd === null) {
             return {
                 status: 'indefinido',
                 label: 'Sem Prazo',
@@ -63,38 +64,52 @@ class AlertService {
             };
         }
 
-        if (days < 0) {
-            const overdueDays = Math.abs(days);
+        // Verifica se o projeto ainda não iniciou (compara start_date com hoje)
+        const daysToStart = this.calculateDaysDifference(project.start_date || project.startDate, baseDateStr);
+        if (daysToStart !== null && daysToStart > 0) {
+            return {
+                status: 'agendado',
+                label: `Inicia em ${daysToStart}d`,
+                badgeColor: 'neutral',
+                daysRemaining: daysToEnd,
+                isCritical: false,
+                message: `Projeto ainda não iniciado. Início previsto em ${daysToStart} dia(s).`
+            };
+        }
+
+        // A partir daqui, o projeto já iniciou — avalia atraso com base em end_date
+        if (daysToEnd < 0) {
+            const overdueDays = Math.abs(daysToEnd);
             return {
                 status: 'atrasado',
                 label: `Atrasado (${overdueDays}d)`,
                 badgeColor: 'danger',
-                daysRemaining: days,
+                daysRemaining: daysToEnd,
                 isCritical: true,
                 message: `Projeto atrasado há ${overdueDays} dia(s). Prazo era ${project.end_date || project.endDate}.`
             };
         }
 
-        if (days <= 7) {
+        if (daysToEnd <= 7) {
             return {
                 status: 'alerta',
-                label: days === 0 ? 'Vence Hoje' : `Vence em ${days}d`,
+                label: daysToEnd === 0 ? 'Vence Hoje' : `Vence em ${daysToEnd}d`,
                 badgeColor: 'warning',
-                daysRemaining: days,
+                daysRemaining: daysToEnd,
                 isCritical: true,
-                message: days === 0 
-                    ? 'Atenção: o prazo deste projeto expira hoje!' 
-                    : `Atenção: restam apenas ${days} dia(s) para a conclusão do projeto.`
+                message: daysToEnd === 0
+                    ? 'Atenção: o prazo deste projeto expira hoje!'
+                    : `Atenção: restam apenas ${daysToEnd} dia(s) para a conclusão do projeto.`
             };
         }
 
         return {
             status: 'no_prazo',
-            label: `No Prazo (${days}d)`,
+            label: `No Prazo (${daysToEnd}d)`,
             badgeColor: 'info',
-            daysRemaining: days,
+            daysRemaining: daysToEnd,
             isCritical: false,
-            message: `Cronograma regular. Restam ${days} dias para o encerramento previsto.`
+            message: `Cronograma regular. Restam ${daysToEnd} dias para o encerramento previsto.`
         };
     }
 

@@ -17,15 +17,16 @@ describe('AlertService - Regras e Estratégia de Prazos', () => {
     });
 
     test('evaluateProjectDeadline deve marcar como "concluido" quando status for Concluído', () => {
-        const project = { status: 'Concluído', end_date: '2026-09-20' };
+        const project = { status: 'Concluído', start_date: '2026-09-01', end_date: '2026-09-20' };
         const result = AlertService.evaluateProjectDeadline(project, fixedToday);
         assert.equal(result.status, 'concluido');
         assert.equal(result.isCritical, false);
         assert.equal(result.badgeColor, 'success');
     });
 
-    test('evaluateProjectDeadline deve identificar projeto atrasado (< 0 dias)', () => {
-        const project = { status: 'Em Andamento', end_date: '2026-09-20' };
+    test('evaluateProjectDeadline deve identificar projeto atrasado (< 0 dias desde end_date)', () => {
+        // start_date no passado => projeto já iniciou, end_date no passado => atrasado
+        const project = { status: 'Em Andamento', start_date: '2026-09-10', end_date: '2026-09-20' };
         const result = AlertService.evaluateProjectDeadline(project, fixedToday);
         assert.equal(result.status, 'atrasado');
         assert.equal(result.isCritical, true);
@@ -34,7 +35,8 @@ describe('AlertService - Regras e Estratégia de Prazos', () => {
     });
 
     test('evaluateProjectDeadline deve identificar projeto em alerta de proximidade (<= 7 dias)', () => {
-        const project = { status: 'Em Andamento', end_date: '2026-09-29' };
+        // start_date no passado => projeto já iniciou, end_date em 4 dias => alerta
+        const project = { status: 'Em Andamento', start_date: '2026-09-10', end_date: '2026-09-29' };
         const result = AlertService.evaluateProjectDeadline(project, fixedToday);
         assert.equal(result.status, 'alerta');
         assert.equal(result.isCritical, true);
@@ -43,12 +45,23 @@ describe('AlertService - Regras e Estratégia de Prazos', () => {
     });
 
     test('evaluateProjectDeadline deve identificar projeto no prazo regular (> 7 dias)', () => {
-        const project = { status: 'Em Andamento', end_date: '2026-10-15' };
+        // start_date no passado => projeto já iniciou, end_date em 20 dias => no_prazo
+        const project = { status: 'Em Andamento', start_date: '2026-09-10', end_date: '2026-10-15' };
         const result = AlertService.evaluateProjectDeadline(project, fixedToday);
         assert.equal(result.status, 'no_prazo');
         assert.equal(result.isCritical, false);
         assert.equal(result.badgeColor, 'info');
         assert.equal(result.daysRemaining, 20);
+    });
+
+    test('evaluateProjectDeadline deve marcar como "agendado" quando start_date ainda não chegou', () => {
+        // start_date no futuro => projeto não iniciou, não deve ser "atrasado"
+        const project = { status: 'Em Andamento', start_date: '2026-09-30', end_date: '2026-10-15' };
+        const result = AlertService.evaluateProjectDeadline(project, fixedToday);
+        assert.equal(result.status, 'agendado');
+        assert.equal(result.isCritical, false);
+        assert.equal(result.badgeColor, 'neutral');
+        assert.ok(result.label.includes('Inicia em'));
     });
 
     test('evaluateActivityDeadline deve alertar etapas atrasadas e próximas (<= 5 dias)', () => {
