@@ -19,6 +19,14 @@ const errorHandler = (err, req, res, next) => {
         });
     }
 
+    // 400 Bad Request: Violação de integridade referencial (FK) — usuário/projeto não encontrado
+    if (msg.includes('foreign key constraint failed')) {
+        return res.status(400).json({
+            success: false,
+            error: 'Operação inválida: o registro referenciado não existe. Tente fazer logout e login novamente.'
+        });
+    }
+
     // 400 Bad Request: Validações de entrada, regras de negócio e recursos não autorizados/não encontrados
     const clientKeywords = [
         'obrigatório',

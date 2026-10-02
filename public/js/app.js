@@ -76,6 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initApp() {
     bindGlobalEvents();
     checkAuthSession();
+
+    // Redireciona para login automaticamente quando o token JWT expira
+    window.addEventListener('auth:expired', () => {
+        renderAuthView();
+        Toast.show('Sua sessão expirou. Por favor, faça login novamente.', 'warning');
+    });
 }
 
 function checkAuthSession() {
@@ -1121,6 +1127,20 @@ function bindGlobalEvents() {
             evaluationAnalysis: document.getElementById('proj-evaluation').value,
             activities: activities
         };
+
+        // Validações client-side antes de chamar a API
+        if (responsibles.length === 0) {
+            Toast.show('Adicione pelo menos um responsável ao projeto.', 'error');
+            return;
+        }
+        if (locations.length === 0) {
+            Toast.show('Adicione pelo menos um local de execução ao projeto.', 'error');
+            return;
+        }
+        if (projectPayload.startDate && projectPayload.endDate && new Date(projectPayload.startDate) > new Date(projectPayload.endDate)) {
+            Toast.show('A Data de Início não pode ser posterior à Previsão de Término.', 'error');
+            return;
+        }
 
         try {
             if (state.editingProjectId) {
