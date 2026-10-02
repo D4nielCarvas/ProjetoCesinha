@@ -34,21 +34,26 @@ class AlertService {
     /**
      * Avalia o status de prazo de um projeto (Estratégia de Prazos)
      * Regras:
-     * - Status Concluído                  -> 'concluido'
-     * - hoje < start_date                 -> 'agendado'  (projeto ainda não iniciou)
-     * - hoje > end_date                   -> 'atrasado'  (Alerta Crítico)
-     * - daysToEnd <= 7 (projeto iniciado) -> 'alerta'    (Proximidade Crítica: 0 a 7 dias)
-     * - daysToEnd > 7                     -> 'no_prazo'
+     * - Status Concluído OU 100% das etapas concluídas -> 'concluido' (sem atraso)
+     * - hoje < start_date                              -> 'agendado'  (projeto ainda não iniciou)
+     * - hoje > end_date                                -> 'atrasado'  (Alerta Crítico)
+     * - daysToEnd <= 7 (projeto iniciado)              -> 'alerta'    (Proximidade Crítica: 0 a 7 dias)
+     * - daysToEnd > 7                                  -> 'no_prazo'
      */
-    static evaluateProjectDeadline(project, baseDateStr = null) {
-        if (project.status === 'Concluído') {
+    static evaluateProjectDeadline(project, baseDateStr = null, activities = []) {
+        const hasActivities = Array.isArray(activities) && activities.length > 0;
+        const allActivitiesDone = hasActivities && activities.every(a => a.status === 'Concluída');
+
+        if (project.status === 'Concluído' || allActivitiesDone) {
             return {
                 status: 'concluido',
                 label: 'Concluído',
                 badgeColor: 'success',
                 daysRemaining: null,
                 isCritical: false,
-                message: 'Projeto concluído com sucesso.'
+                message: allActivitiesDone
+                    ? 'Todas as etapas do cronograma foram concluídas com sucesso.'
+                    : 'Projeto concluído com sucesso.'
             };
         }
 
@@ -86,7 +91,7 @@ class AlertService {
                 badgeColor: 'danger',
                 daysRemaining: daysToEnd,
                 isCritical: true,
-                message: `Projeto atrasado há ${overdueDays} dia(s). Prazo era ${project.end_date || project.endDate}.`
+                message: `Projeto atrasado há ${overdueDays} dia(s). Prazo previsto era ${project.end_date || project.endDate}.`
             };
         }
 
@@ -179,31 +184,36 @@ class AlertService {
      * Enriquecimento de lista de projetos com cálculo de alertas agregados
      */
     static enrichProjectWithAlerts(project, activities = [], baseDateStr = null) {
-        const projectDeadline = this.evaluateProjectDeadline(project, baseDateStr);
+        const projectDeadline = this.evaluateProjectDeadline(project, baseDateStr, activities);
+        const isProjectDone = projectDeadline.status === 'concluido';
         
         let overdueActivities = 0;
         let upcomingActivities = 0;
         const enrichedActivities = activities.map(act => {
             const actDeadline = this.evaluateActivityDeadline(act, baseDateStr);
-            if (actDeadline.status === 'atrasada') overdueActivities++;
-            if (actDeadline.status === 'alerta') upcomingActivities++;
+            if (!isProjectDone && actDeadline.status === 'atrasada') overdueActivities++;
+            if (!isProjectDone && actDeadline.status === 'alerta') upcomingActivities++;
             return {
                 ...act,
                 deadline_info: actDeadline
             };
         });
 
-        // O projeto ganha flag crítica se o próprio prazo venceu/está próximo OU se possui etapas críticas atrasadas
-        const hasCriticalIssues = projectDeadline.isCritical || overdueActivities > 0;
+        // O projeto só ganha alerta crítico se não estiver concluído
+        const hasCriticalIssues = !isProjectDone && (projectDeadline.isCritical || overdueActivities > 0);
+
+        const totalCount = activities.length;
+        const completedCount = activities.filter(a => a.status === 'Concluída').length;
 
         return {
             ...project,
+            status: (isProjectDone && totalCount > 0) ? 'Concluído' : project.status,
             deadline_info: projectDeadline,
             activities_summary: {
-                total: activities.length,
-                completed: activities.filter(a => a.status === 'Concluída').length,
-                overdue: overdueActivities,
-                upcoming: upcomingActivities
+                total: totalCount,
+                completed: completedCount,
+                overdue: isProjectDone ? 0 : overdueActivities,
+                upcoming: isProjectDone ? 0 : upcomingActivities
             },
             has_critical_alerts: hasCriticalIssues,
             activities: enrichedActivities

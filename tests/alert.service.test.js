@@ -114,4 +114,31 @@ describe('AlertService - Regras e Estratégia de Prazos', () => {
         assert.equal(notifications[0].urgency, 'atrasado');
         assert.equal(notifications[0].projectId, 2);
     });
+
+    test('enrichProjectWithAlerts deve marcar como concluído quando 100% das etapas estiverem concluídas, mesmo com end_date no passado', () => {
+        // Projeto com datas históricas (como no print do usuário: 24/12/2025 a 03/03/2026)
+        const project = {
+            id: 101,
+            name: '011-BP-2023 Drench Biotrop',
+            start_date: '2025-12-24',
+            end_date: '2026-03-03',
+            status: 'Em Andamento'
+        };
+
+        const activities = [
+            { id: 1, description: 'Etapa 1', target_date: '2026-01-15', status: 'Concluída' },
+            { id: 2, description: 'Etapa 2', target_date: '2026-02-15', status: 'Concluída' },
+            { id: 3, description: 'Etapa 3', target_date: '2026-03-03', status: 'Concluída' }
+        ];
+
+        const enriched = AlertService.enrichProjectWithAlerts(project, activities, fixedToday);
+        assert.equal(enriched.deadline_info.status, 'concluido');
+        assert.equal(enriched.deadline_info.label, 'Concluído');
+        assert.equal(enriched.deadline_info.badgeColor, 'success');
+        assert.equal(enriched.deadline_info.isCritical, false);
+        assert.equal(enriched.has_critical_alerts, false);
+        assert.equal(enriched.status, 'Concluído');
+        assert.equal(enriched.activities_summary.completed, 3);
+        assert.equal(enriched.activities_summary.total, 3);
+    });
 });

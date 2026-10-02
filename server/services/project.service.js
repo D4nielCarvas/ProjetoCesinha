@@ -83,8 +83,8 @@ class ProjectService {
         // Calcula métricas consolidadas para os cards do dashboard
         const metrics = {
             total: enrichedProjects.length,
-            active: enrichedProjects.filter(p => p.status === 'Em Andamento').length,
-            completed: enrichedProjects.filter(p => p.status === 'Concluído').length,
+            active: enrichedProjects.filter(p => p.status === 'Em Andamento' && p.deadline_info.status !== 'concluido').length,
+            completed: enrichedProjects.filter(p => p.status === 'Concluído' || p.deadline_info.status === 'concluido').length,
             criticalAlerts: enrichedProjects.filter(p => p.has_critical_alerts).length,
             overdue: enrichedProjects.filter(p => p.deadline_info.status === 'atrasado').length,
             upcoming: enrichedProjects.filter(p => p.deadline_info.status === 'alerta').length
