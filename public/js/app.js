@@ -229,7 +229,7 @@ function renderProjectsGrid() {
                     </div>
 
                     <h3 class="card-title">${escapeHtml(project.name)}</h3>
-                    <p class="card-objective">${escapeHtml(project.objective)}</p>
+                    <p class="card-objective">${escapeHtmlMultiline(project.objective)}</p>
 
                     <div class="card-meta-list">
                         <div class="card-meta-item">
@@ -580,12 +580,12 @@ async function openProjectDetailsModal(projectId) {
         const startFmt = project.start_date ? project.start_date.split('-').reverse().join('/') : '-';
         const endFmt = project.end_date ? project.end_date.split('-').reverse().join('/') : '-';
         document.getElementById('details-period').textContent = `${startFmt} até ${endFmt}`;
-        document.getElementById('details-objective').textContent = project.objective;
+        document.getElementById('details-objective').innerHTML = escapeHtmlMultiline(project.objective);
 
         const evalContainer = document.getElementById('details-eval-container');
         if (project.evaluation_analysis) {
             evalContainer.style.display = 'block';
-            document.getElementById('details-evaluation').textContent = project.evaluation_analysis;
+            document.getElementById('details-evaluation').innerHTML = escapeHtmlMultiline(project.evaluation_analysis);
         } else {
             evalContainer.style.display = 'none';
         }
@@ -796,23 +796,23 @@ async function exportProjectToPdf(projectId) {
                     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
                     body { color: #1e293b; background: #ffffff; font-size: 11pt; line-height: 1.45; }
                     
-                    .header { border-bottom: 2px solid #4f46e5; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; }
-                    .brand { font-size: 16pt; font-weight: 800; color: #1e293b; }
-                    .brand span { color: #4f46e5; }
+                    .header { border-bottom: 2px solid #0b4628; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; }
+                    .brand { font-size: 16pt; font-weight: 800; color: #0b4628; }
+                    .brand span { color: #e8771a; font-weight: 600; font-size: 11pt; margin-left: 6px; }
                     .emission-meta { font-size: 8.5pt; color: #64748b; text-align: right; }
 
                     .title-section { margin-bottom: 16px; }
-                    .project-title { font-size: 16pt; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+                    .project-title { font-size: 16pt; font-weight: 700; color: #0b4628; margin-bottom: 6px; }
                     .tag-row { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
                     .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 8pt; font-weight: 700; text-transform: uppercase; }
-                    .badge-indigo { background: #e0e7ff; color: #3730a3; }
-                    .badge-sky { background: #e0f2fe; color: #0369a1; }
+                    .badge-indigo { background: #dcfce7; color: #0b4628; }
+                    .badge-sky { background: #ffedd5; color: #c25e0a; }
                     .badge-danger { background: #fee2e2; color: #991b1b; }
                     .badge-warning { background: #fef3c7; color: #92400e; }
                     .badge-success { background: #d1fae5; color: #065f46; }
                     .badge-info { background: #e0f2fe; color: #075985; }
 
-                    .deadline-box { background: #f8fafc; border-left: 4px solid #6366f1; padding: 8px 12px; border-radius: 4px; font-size: 9.5pt; margin-bottom: 16px; }
+                    .deadline-box { background: #f8fafc; border-left: 4px solid #0b4628; padding: 8px 12px; border-radius: 4px; font-size: 9.5pt; margin-bottom: 16px; }
                     .deadline-box.atrasado { border-left-color: #ef4444; background: #fef2f2; color: #991b1b; }
                     .deadline-box.alerta { border-left-color: #f59e0b; background: #fffbeb; color: #92400e; }
                     .deadline-box.concluido { border-left-color: #10b981; background: #ecfdf5; color: #065f46; }
@@ -830,9 +830,9 @@ async function exportProjectToPdf(projectId) {
                     .progress-box { margin-bottom: 16px; }
                     .progress-header { display: flex; justify-content: space-between; font-size: 8.5pt; font-weight: 700; margin-bottom: 4px; }
                     .progress-bar-bg { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-                    .progress-bar-fill { height: 100%; background: #4f46e5; border-radius: 4px; width: ${percent}%; }
+                    .progress-bar-fill { height: 100%; background: #0b4628; border-radius: 4px; width: ${percent}%; }
 
-                    .section-heading { font-size: 11pt; font-weight: 700; color: #0f172a; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+                    .section-heading { font-size: 11pt; font-weight: 700; color: #0b4628; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
                     table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 9pt; }
                     th { background: #f1f5f9; color: #475569; font-weight: 700; text-align: left; padding: 6px 8px; border: 1px solid #cbd5e1; }
                     td { padding: 6px 8px; border: 1px solid #e2e8f0; color: #1e293b; }
@@ -848,7 +848,7 @@ async function exportProjectToPdf(projectId) {
             </head>
             <body>
                 <div class="header">
-                    <div class="brand">Nexus<span>Projetos</span></div>
+                    <div class="brand">Poma<span>&bull; Inteligência Agrícola</span></div>
                     <div class="emission-meta">
                         <div>Relatório Técnico de Projeto</div>
                         <div>Emitido em: ${emissionDate}</div>
@@ -887,13 +887,13 @@ async function exportProjectToPdf(projectId) {
 
                 <div class="info-card" style="margin-bottom: 16px;">
                     <h4>Objetivo do Projeto</h4>
-                    <p>${escapeHtml(project.objective)}</p>
+                    <p style="white-space: pre-wrap;">${escapeHtmlMultiline(project.objective)}</p>
                 </div>
 
                 ${project.evaluation_analysis ? `
                 <div class="info-card" style="margin-bottom: 16px;">
                     <h4>Critérios de Avaliação e Análise</h4>
-                    <p>${escapeHtml(project.evaluation_analysis)}</p>
+                    <p style="white-space: pre-wrap;">${escapeHtmlMultiline(project.evaluation_analysis)}</p>
                 </div>
                 ` : ''}
 
@@ -945,8 +945,8 @@ async function exportProjectToPdf(projectId) {
                         <div>Assinatura do Responsável</div>
                     </div>
                     <div class="sig-line">
-                        <strong>Nexus Projetos - Sistema de Gestão</strong>
-                        <div>Validação e Controle Operacional</div>
+                        <strong>Poma - Projetos em Inteligência Agrícola</strong>
+                        <div>Validação e Controle Operacional • Metodologia PAAM</div>
                     </div>
                 </div>
             </body>
@@ -1229,3 +1229,13 @@ function escapeHtml(str) {
     div.textContent = str;
     return div.innerHTML;
 }
+
+/**
+ * Escapa HTML (anti-XSS) e converte quebras de linha (\n) em <br>
+ * para exibição correta de campos textarea em contextos innerHTML.
+ */
+function escapeHtmlMultiline(str) {
+    if (!str) return '';
+    return escapeHtml(str).replace(/\n/g, '<br>');
+}
+

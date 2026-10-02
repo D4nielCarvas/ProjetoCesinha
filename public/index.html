@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Projetos - Gestão de Projetos e Atividades</title>
+    <title>Poma - Projetos em Inteligência Agrícola</title>
     <meta name="description"
-        content="Sistema completo de gestão de projetos, cronogramas dinâmicos e alertas automatizados de prazos críticos.">
+        content="Poma - Sistema integrado de gestão de projetos em inteligência agrícola baseado na Metodologia PAAM (Planejar, Avaliar, Analisar, Melhorar).">
+    <link rel="icon" type="image/svg+xml" href="img/poma-symbol.svg">
     <link rel="stylesheet" href="css/tokens.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,15 +18,14 @@
          TOP NAVIGATION BAR
          ==================================================================== -->
     <header class="navbar" id="app-navbar" style="display: none;">
-        <div class="brand" id="nav-brand-btn">
+        <div class="brand" id="nav-brand-btn" title="Poma - Inteligência Agrícola">
             <div class="brand-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                    <polyline points="2 17 12 22 22 17"></polyline>
-                    <polyline points="2 12 12 17 22 12"></polyline>
-                </svg>
+                <img src="img/poma-symbol.svg" alt="Símbolo Poma">
             </div>
-            <span>Nexus<strong>Projetos</strong></span>
+            <div class="brand-text-group">
+                <span class="brand-title">Poma</span>
+                <span class="brand-subtitle">Inteligência Agrícola</span>
+            </div>
         </div>
 
         <div class="nav-actions">
@@ -124,16 +124,20 @@
             </div>
             <div class="auth-card">
                 <div class="auth-header">
-                    <div class="brand-icon" style="margin: 0 auto 1rem auto; width: 48px; height: 48px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round" style="width: 28px; height: 28px;">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                            <polyline points="2 17 12 22 22 17"></polyline>
-                            <polyline points="2 12 12 17 22 12"></polyline>
-                        </svg>
+                    <div class="auth-logo-box">
+                        <img src="img/logo-poma.png" alt="Poma - Projetos em Inteligência Agrícola" class="auth-logo-img">
                     </div>
-                    <h2>Nexus Projetos</h2>
-                    <p id="auth-subtitle">Acesse seu painel integrado de projetos</p>
+                    <h2>Poma</h2>
+                    <p id="auth-subtitle">Projetos em Inteligência Agrícola</p>
+                    <div class="auth-paam-steps" title="Metodologia PAAM: Planejar, Avaliar, Analisar, Melhorar">
+                        <span class="auth-paam-step step-p">Planejar</span>
+                        <span class="auth-paam-divider">&bull;</span>
+                        <span class="auth-paam-step step-a1">Avaliar</span>
+                        <span class="auth-paam-divider">&bull;</span>
+                        <span class="auth-paam-step step-a2">Analisar</span>
+                        <span class="auth-paam-divider">&bull;</span>
+                        <span class="auth-paam-step step-m">Melhorar</span>
+                    </div>
                 </div>
 
                 <div class="auth-tabs">
@@ -629,16 +633,12 @@
 
                 <div class="form-group">
                     <label class="form-label">Objetivo do Projeto</label>
-                    <p id="details-objective"
-                        style="font-size: 0.92rem; color: var(--color-text-main); background: var(--color-bg-surface-elevated); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-                        -</p>
+                    <p id="details-objective" class="details-text-content">-</p>
                 </div>
 
                 <div class="form-group" id="details-eval-container">
                     <label class="form-label">Avaliação e Análise (Métricas)</label>
-                    <p id="details-evaluation"
-                        style="font-size: 0.92rem; color: var(--color-text-main); background: var(--color-bg-surface-elevated); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-                        -</p>
+                    <p id="details-evaluation" class="details-text-content">-</p>
                 </div>
 
                 <!-- Linha do Tempo Visual do Cronograma -->

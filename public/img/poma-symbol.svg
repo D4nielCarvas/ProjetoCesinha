@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+    <defs>
+        <linearGradient id="pomaSunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FBBF24" />
+            <stop offset="40%" stop-color="#F59E0B" />
+            <stop offset="100%" stop-color="#E8771A" />
+        </linearGradient>
+        <linearGradient id="pomaGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#115933" />
+            <stop offset="100%" stop-color="#08371E" />
+        </linearGradient>
+        <linearGradient id="pomaLeafGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4D8428" />
+            <stop offset="100%" stop-color="#6AA836" />
+        </linearGradient>
+    </defs>
+    <!-- Contorno do P Poma -->
+    <path d="M12 12 H62 C80 12, 94 25, 94 45 C94 65, 80 77, 62 77 H40 V92 C40 95, 36 97, 33 94 C20 82, 12 55, 12 12 Z" 
+          fill="url(#pomaGreenGrad)" />
+    <!-- Círculo Solar Laranja no Miolo do P -->
+    <circle cx="53" cy="45" r="23" fill="url(#pomaSunGrad)" />
+    <!-- Folha Verde Broto -->
+    <path d="M37 63 C38 42, 54 28, 77 24 C76 45, 60 59, 37 63 Z" 
+          fill="url(#pomaLeafGrad)" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round" />
+    <!-- Nervura da Folha -->
+    <path d="M38 62 C50 51, 62 39, 76 25" 
+          stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+</svg>

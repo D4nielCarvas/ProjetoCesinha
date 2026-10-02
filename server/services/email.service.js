@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-const APP_NAME = 'Nexus Projetos';
+const APP_NAME = 'Poma - Projetos em Inteligência Agrícola';
 const APP_URL  = process.env.APP_URL || 'http://localhost:3000';
 
 /**

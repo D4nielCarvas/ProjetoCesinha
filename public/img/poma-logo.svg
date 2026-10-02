@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 180" fill="none">
+    <defs>
+        <linearGradient id="pomaSun" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FBBF24" />
+            <stop offset="40%" stop-color="#F59E0B" />
+            <stop offset="100%" stop-color="#E8771A" />
+        </linearGradient>
+        <linearGradient id="pomaLeaf" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4D8428" />
+            <stop offset="100%" stop-color="#6AA836" />
+        </linearGradient>
+    </defs>
+
+    <!-- Símbolo P -->
+    <g transform="translate(10, 10) scale(0.95)">
+        <path d="M12 12 H62 C80 12, 94 25, 94 45 C94 65, 80 77, 62 77 H40 V92 C40 95, 36 97, 33 94 C20 82, 12 55, 12 12 Z" 
+              fill="#0B4628" />
+        <circle cx="53" cy="45" r="23" fill="url(#pomaSun)" />
+        <path d="M37 63 C38 42, 54 28, 77 24 C76 45, 60 59, 37 63 Z" 
+          fill="url(#pomaLeaf)" stroke="#ffffff" stroke-width="2.8" stroke-linejoin="round" />
+        <path d="M38 62 C50 51, 62 39, 76 25" 
+          stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" />
+    </g>
+
+    <!-- Letras oma -->
+    <g fill="#0B4628">
+        <!-- Letra 'o' -->
+        <path d="M142 66 C142 43, 159 28, 183 28 C207 28, 224 43, 224 66 C224 89, 207 104, 183 104 C159 104, 142 89, 142 66 Z M201 66 C201 54, 194 45, 183 45 C172 45, 165 54, 165 66 C165 78, 172 87, 183 87 C194 87, 201 78, 201 66 Z" />
+        <!-- Letra 'm' -->
+        <path d="M236 31 H257 V44 C263 35, 273 29, 286 29 C299 29, 308 35, 313 44 C320 35, 331 29, 344 29 C362 29, 372 40, 372 61 V102 H351 V64 C351 52, 345 46, 336 46 C326 46, 320 53, 320 65 V102 H299 V64 C299 52, 293 46, 284 46 C274 46, 268 53, 268 65 V102 H247 V31 H236 Z" />
+        <!-- Letra 'a' -->
+        <path d="M428 31 H449 V102 H429 V90 C423 98, 412 104, 399 104 C381 104, 368 92, 368 74 C368 55, 384 44, 408 44 C415 44, 422 45, 428 47 V45 C428 36, 421 31, 411 31 C402 31, 396 34, 393 40 H372 C376 29, 390 17, 412 17 C418 17, 428 20, 428 31 Z M428 62 C422 60, 416 59, 411 59 C399 59, 390 64, 390 73 C390 81, 397 86, 407 86 C419 86, 428 78, 428 67 V62 Z" />
+    </g>
+
+    <!-- Subtítulo: PROJETOS EM INTELIGÊNCIA AGRÍCOLA -->
+    <text x="14" y="142" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-size="19" font-weight="700" letter-spacing="3.8" fill="#0B4628">
+        PROJETOS EM INTELIGÊNCIA AGRÍCOLA
+    </text>
+</svg>

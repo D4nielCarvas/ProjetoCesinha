@@ -1,33 +1,39 @@
 :root {
-    /* Paleta de Cores Principais - Azul Escuro */
-    --color-primary-50: #eff6ff;
-    --color-primary-100: #dbeafe;
-    --color-primary-200: #bfdbfe;
-    --color-primary-500: #1d4ed8;
-    --color-primary-600: #1e40af;
-    --color-primary-700: #1e3a8a;
-    --color-primary-800: #1e3270;
+    /* Paleta de Cores Principais - Poma (Verde Floresta / Agricultura Tecnológica) */
+    --color-primary-50: #f0fdf4;
+    --color-primary-100: #dcfce7;
+    --color-primary-200: #bbf7d0;
+    --color-primary-500: #0f5132;
+    --color-primary-600: #0b4628;
+    --color-primary-700: #083820;
+    --color-primary-800: #052615;
 
-    /* Neutros e Backgrounds - Slate (Modo Escuro Padrão) */
-    --color-bg-body: #0f172a;
-    --color-bg-surface: #1e293b;
-    --color-bg-surface-elevated: #334155;
-    --color-bg-surface-glass: rgba(30, 41, 59, 0.8);
-    --color-bg-input: rgba(15, 23, 42, 0.75);
-    --color-bg-input-focus: rgba(15, 23, 42, 0.95);
-    --color-bg-card-nested: rgba(15, 23, 42, 0.6);
-    --color-bg-notification-item: rgba(15, 23, 42, 0.6);
-    --color-modal-backdrop: rgba(15, 23, 42, 0.8);
+    /* Acentos da Marca Poma / Metodologia PAAM */
+    --color-accent-amber: #e8771a;
+    --color-accent-amber-light: #f59e0b;
+    --color-accent-leaf: #5c9434;
+    --color-accent-leaf-light: #7cb342;
 
-    --color-border: #334155;
-    --color-border-subtle: #1e293b;
-    --color-border-focus: #60a5fa;
+    /* Neutros e Backgrounds - Dark Floresta Sofisticado (Modo Escuro Padrão) */
+    --color-bg-body: #09130e;
+    --color-bg-surface: #102119;
+    --color-bg-surface-elevated: #182e23;
+    --color-bg-surface-glass: rgba(16, 33, 25, 0.85);
+    --color-bg-input: rgba(9, 19, 14, 0.8);
+    --color-bg-input-focus: rgba(9, 19, 14, 0.98);
+    --color-bg-card-nested: rgba(9, 19, 14, 0.65);
+    --color-bg-notification-item: rgba(9, 19, 14, 0.7);
+    --color-modal-backdrop: rgba(4, 10, 7, 0.82);
+
+    --color-border: #1f3b2e;
+    --color-border-subtle: #142a20;
+    --color-border-focus: #34d399;
 
     /* Tipografia */
-    --color-text-main: #f8fafc;
-    --color-text-muted: #94a3b8;
-    --color-text-subtle: #64748b;
-    --color-text-inverted: #0f172a;
+    --color-text-main: #f2f7f4;
+    --color-text-muted: #9ab4a6;
+    --color-text-subtle: #6c8879;
+    --color-text-inverted: #09130e;
 
     /* Cores de Alerta Semânticas */
     --color-success: #10b981;
@@ -42,9 +48,9 @@
     --color-danger-bg: rgba(239, 68, 68, 0.14);
     --color-danger-border: rgba(239, 68, 68, 0.35);
 
-    --color-info: #0ea5e9;
-    --color-info-bg: rgba(14, 165, 233, 0.14);
-    --color-info-border: rgba(14, 165, 233, 0.35);
+    --color-info: #0284c7;
+    --color-info-bg: rgba(2, 132, 199, 0.14);
+    --color-info-border: rgba(2, 132, 199, 0.35);
 
     /* Cores de Texto Semântico para Badges, Alertas e Tags */
     --color-badge-danger-text: #fca5a5;
@@ -52,16 +58,16 @@
     --color-badge-info-text: #7dd3fc;
     --color-badge-success-text: #6ee7b7;
 
-    --color-tag-classification-text: #93c5fd;
-    --color-tag-classification-bg: rgba(29, 78, 216, 0.15);
-    --color-tag-classification-border: rgba(29, 78, 216, 0.3);
+    --color-tag-classification-text: #86efac;
+    --color-tag-classification-bg: rgba(15, 81, 50, 0.3);
+    --color-tag-classification-border: rgba(34, 197, 94, 0.35);
 
-    --color-tag-type-text: #7dd3fc;
-    --color-tag-type-bg: rgba(14, 165, 233, 0.15);
-    --color-tag-type-border: rgba(14, 165, 233, 0.3);
+    --color-tag-type-text: #fed7aa;
+    --color-tag-type-bg: rgba(232, 119, 26, 0.18);
+    --color-tag-type-border: rgba(232, 119, 26, 0.35);
 
     --color-btn-danger-text: #fca5a5;
-    --color-auth-bg-radial: radial-gradient(circle at 50% 20%, rgba(29, 78, 216, 0.15) 0%, transparent 60%);
+    --color-auth-bg-radial: radial-gradient(circle at 50% 20%, rgba(15, 81, 50, 0.35) 0%, rgba(232, 119, 26, 0.1) 45%, transparent 70%);
     --color-metric-icon-bg: rgba(255, 255, 255, 0.05);
     --color-metric-icon-border: transparent;
     --color-empty-state-bg: var(--color-bg-surface);
@@ -75,7 +81,7 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-    --shadow-glow-primary: 0 0 20px rgba(29, 78, 216, 0.35);
+    --shadow-glow-primary: 0 0 20px rgba(15, 81, 50, 0.45);
     --shadow-glow-danger: 0 0 20px rgba(239, 68, 68, 0.35);
 
     /* Raios de Borda */
@@ -92,28 +98,28 @@
 }
 
 /* ==========================================================================
-   MODO CLARO (LIGHT THEME)
+   MODO CLARO (LIGHT THEME) - POMA IDENTIDADE LIMPA E NATURAL
    ========================================================================== */
 [data-theme="light"] {
     /* Paleta Neutra e Superfícies Claras */
-    --color-bg-body: #f8fafc;
+    --color-bg-body: #f6faf6;
     --color-bg-surface: #ffffff;
-    --color-bg-surface-elevated: #f1f5f9;
-    --color-bg-surface-glass: rgba(255, 255, 255, 0.88);
+    --color-bg-surface-elevated: #eef5ee;
+    --color-bg-surface-glass: rgba(255, 255, 255, 0.92);
     --color-bg-input: #ffffff;
     --color-bg-input-focus: #ffffff;
-    --color-bg-card-nested: #f8fafc;
-    --color-bg-notification-item: #f8fafc;
-    --color-modal-backdrop: rgba(15, 23, 42, 0.5);
+    --color-bg-card-nested: #f8faf8;
+    --color-bg-notification-item: #f8faf8;
+    --color-modal-backdrop: rgba(10, 25, 17, 0.55);
 
-    --color-border: #e2e8f0;
-    --color-border-subtle: #edf2f7;
-    --color-border-focus: #1d4ed8;
+    --color-border: #d7e4d7;
+    --color-border-subtle: #e6efe6;
+    --color-border-focus: #0b4628;
 
     /* Tipografia de Alto Contraste */
-    --color-text-main: #0f172a;
-    --color-text-muted: #475569;
-    --color-text-subtle: #64748b;
+    --color-text-main: #0c1e14;
+    --color-text-muted: #3c5246;
+    --color-text-subtle: #5b7367;
     --color-text-inverted: #ffffff;
 
     /* Cores de Alerta Semânticas no Modo Claro */
@@ -139,25 +145,25 @@
     --color-badge-info-text: #0369a1;
     --color-badge-success-text: #047857;
 
-    --color-tag-classification-text: #1e40af;
-    --color-tag-classification-bg: rgba(29, 78, 216, 0.1);
-    --color-tag-classification-border: rgba(29, 78, 216, 0.25);
+    --color-tag-classification-text: #0b4628;
+    --color-tag-classification-bg: rgba(15, 81, 50, 0.12);
+    --color-tag-classification-border: rgba(15, 81, 50, 0.28);
 
-    --color-tag-type-text: #0369a1;
-    --color-tag-type-bg: rgba(14, 165, 233, 0.1);
-    --color-tag-type-border: rgba(14, 165, 233, 0.25);
+    --color-tag-type-text: #c25e0a;
+    --color-tag-type-bg: rgba(232, 119, 26, 0.12);
+    --color-tag-type-border: rgba(232, 119, 26, 0.28);
 
     --color-btn-danger-text: #dc2626;
-    --color-auth-bg-radial: radial-gradient(circle at 50% 20%, rgba(29, 78, 216, 0.08) 0%, transparent 65%);
-    --color-metric-icon-bg: rgba(29, 78, 216, 0.08);
-    --color-metric-icon-border: rgba(29, 78, 216, 0.18);
+    --color-auth-bg-radial: radial-gradient(circle at 50% 15%, rgba(15, 81, 50, 0.15) 0%, rgba(232, 119, 26, 0.06) 50%, transparent 75%);
+    --color-metric-icon-bg: rgba(15, 81, 50, 0.08);
+    --color-metric-icon-border: rgba(15, 81, 50, 0.18);
     --color-empty-state-bg: #ffffff;
 
-    /* Sombras Suaves e Elegantes */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.03);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.09), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-    --shadow-glow-primary: 0 0 18px rgba(29, 78, 216, 0.2);
+    /* Sombras Suaves e Orgânicas */
+    --shadow-sm: 0 1px 2px 0 rgba(10, 30, 20, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(10, 30, 20, 0.08), 0 2px 4px -2px rgba(10, 30, 20, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(10, 30, 20, 0.1), 0 4px 6px -4px rgba(10, 30, 20, 0.04);
+    --shadow-xl: 0 20px 25px -5px rgba(10, 30, 20, 0.12), 0 8px 10px -6px rgba(10, 30, 20, 0.05);
+    --shadow-glow-primary: 0 0 18px rgba(15, 81, 50, 0.22);
     --shadow-glow-danger: 0 0 18px rgba(220, 38, 38, 0.18);
 }
