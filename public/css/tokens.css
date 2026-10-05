@@ -1,128 +1,143 @@
+/* ==========================================================================
+   POMA - DESIGN TOKENS (SISTEMA DE DESIGN INTELIGÊNCIA AGRÍCOLA)
+   Fundamentado na skill 'frontend-design': identidade intencional, 
+   fuga de clichês de IA e ancoragem no universo agronômico/PAAM.
+   ========================================================================== */
+
 :root {
-    /* Paleta de Cores Principais - Poma (Verde Floresta / Agricultura Tecnológica) */
+    /* ----------------------------------------------------------------------
+       Paleta de Identidade Poma (Dark Peat / Turfa & Clorofila)
+       ---------------------------------------------------------------------- */
     --color-primary-50: #f0fdf4;
     --color-primary-100: #dcfce7;
     --color-primary-200: #bbf7d0;
-    --color-primary-500: #0f5132;
-    --color-primary-600: #0b4628;
-    --color-primary-700: #083820;
-    --color-primary-800: #052615;
+    --color-primary-300: #86efac;
+    --color-primary-400: #52b788;
+    --color-primary-500: #2d6a4f;  /* Clorofila ativa da marca */
+    --color-primary-600: #1b4332;  /* Verde floresta profundo */
+    --color-primary-700: #143526;
+    --color-primary-800: #0d2319;
 
-    /* Acentos da Marca Poma / Metodologia PAAM */
-    --color-accent-amber: #e8771a;
+    /* Acentos Agronômicos */
+    --color-accent-amber: #d97706;        /* Safra / Prazos próximos */
     --color-accent-amber-light: #f59e0b;
-    --color-accent-leaf: #5c9434;
-    --color-accent-leaf-light: #7cb342;
+    --color-accent-amber-subtle: rgba(217, 119, 6, 0.15);
+    --color-accent-leaf: #40916c;
+    --color-accent-sprout: #74c69d;
 
-    /* Neutros e Backgrounds - Dark Floresta Sofisticado (Modo Escuro Padrão) */
-    --color-bg-body: #09130e;
-    --color-bg-surface: #102119;
-    --color-bg-surface-elevated: #182e23;
-    --color-bg-surface-glass: rgba(16, 33, 25, 0.85);
-    --color-bg-input: rgba(9, 19, 14, 0.8);
-    --color-bg-input-focus: rgba(9, 19, 14, 0.98);
-    --color-bg-card-nested: rgba(9, 19, 14, 0.65);
-    --color-bg-notification-item: rgba(9, 19, 14, 0.7);
-    --color-modal-backdrop: rgba(4, 10, 7, 0.82);
+    /* Neutros e Superfícies (Dark Peat / Solo Fértil) */
+    --color-bg-body: #0a110d;             /* Fundo escuro mineral/turfa */
+    --color-bg-surface: #111c16;          /* Painéis e superfícies operacionais */
+    --color-bg-surface-elevated: #17261e; /* Cards elevados e modais */
+    --color-bg-surface-glass: rgba(17, 28, 22, 0.88);
+    --color-bg-input: #0e1712;
+    --color-bg-input-focus: #14221a;
+    --color-bg-card-nested: rgba(14, 23, 18, 0.7);
+    --color-bg-notification-item: #14221a;
+    --color-modal-backdrop: rgba(5, 10, 7, 0.85);
 
-    --color-border: #1f3b2e;
-    --color-border-subtle: #142a20;
-    --color-border-focus: #34d399;
+    /* Linhas e Contornos Estruturais */
+    --color-border: #21352a;
+    --color-border-subtle: #18281f;
+    --color-border-focus: #52b788;
 
-    /* Tipografia */
-    --color-text-main: #f2f7f4;
-    --color-text-muted: #9ab4a6;
-    --color-text-subtle: #6c8879;
-    --color-text-inverted: #09130e;
+    /* Tipografia de Alto Contraste */
+    --color-text-main: #edf3ef;           /* Branco osso mineral */
+    --color-text-muted: #95ab9e;          /* Musgo acinzentado de fácil leitura */
+    --color-text-subtle: #637a6c;         /* Metadados e rótulos terciários */
+    --color-text-inverted: #0a110d;
 
-    /* Cores de Alerta Semânticas */
-    --color-success: #10b981;
-    --color-success-bg: rgba(16, 185, 129, 0.14);
-    --color-success-border: rgba(16, 185, 129, 0.35);
+    /* Cores de Alerta Semânticas (Agronomia & Operação) */
+    --color-success: #34d399;
+    --color-success-bg: rgba(52, 211, 153, 0.12);
+    --color-success-border: rgba(52, 211, 153, 0.3);
 
     --color-warning: #f59e0b;
-    --color-warning-bg: rgba(245, 158, 11, 0.14);
-    --color-warning-border: rgba(245, 158, 11, 0.35);
+    --color-warning-bg: rgba(245, 158, 11, 0.12);
+    --color-warning-border: rgba(245, 158, 11, 0.3);
 
-    --color-danger: #ef4444;
-    --color-danger-bg: rgba(239, 68, 68, 0.14);
-    --color-danger-border: rgba(239, 68, 68, 0.35);
+    --color-danger: #f87171;
+    --color-danger-bg: rgba(248, 113, 113, 0.12);
+    --color-danger-border: rgba(248, 113, 113, 0.3);
 
-    --color-info: #0284c7;
-    --color-info-bg: rgba(2, 132, 199, 0.14);
-    --color-info-border: rgba(2, 132, 199, 0.35);
+    --color-info: #38bdf8;
+    --color-info-bg: rgba(56, 189, 248, 0.12);
+    --color-info-border: rgba(56, 189, 248, 0.3);
 
-    /* Cores de Texto Semântico para Badges, Alertas e Tags */
+    /* Badges Semânticos */
     --color-badge-danger-text: #fca5a5;
     --color-badge-warning-text: #fcd34d;
     --color-badge-info-text: #7dd3fc;
     --color-badge-success-text: #6ee7b7;
 
-    --color-tag-classification-text: #86efac;
-    --color-tag-classification-bg: rgba(15, 81, 50, 0.3);
-    --color-tag-classification-border: rgba(34, 197, 94, 0.35);
+    --color-tag-classification-text: #a7f3d0;
+    --color-tag-classification-bg: rgba(45, 106, 79, 0.28);
+    --color-tag-classification-border: rgba(82, 183, 136, 0.35);
 
     --color-tag-type-text: #fed7aa;
-    --color-tag-type-bg: rgba(232, 119, 26, 0.18);
-    --color-tag-type-border: rgba(232, 119, 26, 0.35);
+    --color-tag-type-bg: rgba(217, 119, 6, 0.2);
+    --color-tag-type-border: rgba(217, 119, 6, 0.35);
 
     --color-btn-danger-text: #fca5a5;
-    --color-auth-bg-radial: radial-gradient(circle at 50% 20%, rgba(15, 81, 50, 0.35) 0%, rgba(232, 119, 26, 0.1) 45%, transparent 70%);
-    --color-metric-icon-bg: rgba(255, 255, 255, 0.05);
-    --color-metric-icon-border: transparent;
+    --color-auth-bg-radial: radial-gradient(circle at 50% 18%, rgba(45, 106, 79, 0.25) 0%, rgba(10, 17, 13, 0.95) 60%);
+    --color-metric-icon-bg: rgba(255, 255, 255, 0.04);
+    --color-metric-icon-border: rgba(255, 255, 255, 0.08);
     --color-empty-state-bg: var(--color-bg-surface);
 
-    /* Tipografia e Fontes */
+    /* Tipografia Deliberada: Space Grotesk (técnica/marca) + Inter (dados/interface) */
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-heading: 'Plus Jakarta Sans', var(--font-sans);
+    --font-heading: 'Space Grotesk', 'Plus Jakarta Sans', var(--font-sans);
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-    /* Elevações e Sombras */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -2px rgba(0, 0, 0, 0.25);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.45), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
-    --shadow-glow-primary: 0 0 20px rgba(15, 81, 50, 0.45);
-    --shadow-glow-danger: 0 0 20px rgba(239, 68, 68, 0.35);
+    /* Elevações e Sombras Físicas (sem dispersões artificiais) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 10px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 22px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 32px -8px rgba(0, 0, 0, 0.6);
+    --shadow-glow-primary: 0 0 16px rgba(82, 183, 136, 0.25);
+    --shadow-glow-danger: 0 0 16px rgba(248, 113, 113, 0.2);
 
-    /* Raios de Borda */
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
+    /* Raios de Borda Precisos (evita arredondamento excessivo) */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
     --radius-full: 9999px;
 
-    /* Transições */
-    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+    /* Transições de Resposta */
+    --transition-fast: 140ms ease-out;
+    --transition-normal: 220ms ease-out;
+    --transition-smooth: 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==========================================================================
-   MODO CLARO (LIGHT THEME) - POMA IDENTIDADE LIMPA E NATURAL
+   MODO CLARO (LIGHT THEME) - CAMPO & LUZ DO SOL
+   Superfícies orgânicas, mineral claro, alto contraste e sem cansaço visual.
    ========================================================================== */
 [data-theme="light"] {
     /* Paleta Neutra e Superfícies Claras */
-    --color-bg-body: #f6faf6;
-    --color-bg-surface: #ffffff;
-    --color-bg-surface-elevated: #eef5ee;
-    --color-bg-surface-glass: rgba(255, 255, 255, 0.92);
+    --color-bg-body: #f4f7f4;             /* Mineral claro / campo aberto */
+    --color-bg-surface: #ffffff;          /* Cartões e painéis puros */
+    --color-bg-surface-elevated: #ebf1ec; /* Superfícies elevadas */
+    --color-bg-surface-glass: rgba(255, 255, 255, 0.94);
     --color-bg-input: #ffffff;
     --color-bg-input-focus: #ffffff;
-    --color-bg-card-nested: #f8faf8;
-    --color-bg-notification-item: #f8faf8;
-    --color-modal-backdrop: rgba(10, 25, 17, 0.55);
+    --color-bg-card-nested: #f0f5f1;
+    --color-bg-notification-item: #f7faf7;
+    --color-modal-backdrop: rgba(12, 22, 16, 0.6);
 
-    --color-border: #d7e4d7;
-    --color-border-subtle: #e6efe6;
-    --color-border-focus: #0b4628;
+    /* Bordas */
+    --color-border: #d4e0d7;
+    --color-border-subtle: #e4ece6;
+    --color-border-focus: #1b4332;
 
     /* Tipografia de Alto Contraste */
-    --color-text-main: #0c1e14;
-    --color-text-muted: #3c5246;
-    --color-text-subtle: #5b7367;
+    --color-text-main: #0c1a11;           /* Escuro folha profunda */
+    --color-text-muted: #384e40;          /* Verde oliva escuro legível */
+    --color-text-subtle: #617769;
     --color-text-inverted: #ffffff;
 
-    /* Cores de Alerta Semânticas no Modo Claro */
+    /* Cores Semânticas no Modo Claro */
     --color-success: #059669;
     --color-success-bg: rgba(5, 150, 105, 0.1);
     --color-success-border: rgba(5, 150, 105, 0.25);
@@ -139,31 +154,30 @@
     --color-info-bg: rgba(2, 132, 199, 0.1);
     --color-info-border: rgba(2, 132, 199, 0.25);
 
-    /* Cores de Texto Semântico para Badges, Alertas e Tags no Modo Claro */
-    --color-badge-danger-text: #b91c1c;
-    --color-badge-warning-text: #b45309;
-    --color-badge-info-text: #0369a1;
-    --color-badge-success-text: #047857;
+    --color-badge-danger-text: #991b1b;
+    --color-badge-warning-text: #92400e;
+    --color-badge-info-text: #075985;
+    --color-badge-success-text: #065f46;
 
-    --color-tag-classification-text: #0b4628;
-    --color-tag-classification-bg: rgba(15, 81, 50, 0.12);
-    --color-tag-classification-border: rgba(15, 81, 50, 0.28);
+    --color-tag-classification-text: #143526;
+    --color-tag-classification-bg: rgba(45, 106, 79, 0.12);
+    --color-tag-classification-border: rgba(45, 106, 79, 0.26);
 
-    --color-tag-type-text: #c25e0a;
-    --color-tag-type-bg: rgba(232, 119, 26, 0.12);
-    --color-tag-type-border: rgba(232, 119, 26, 0.28);
+    --color-tag-type-text: #9a3412;
+    --color-tag-type-bg: rgba(217, 119, 6, 0.12);
+    --color-tag-type-border: rgba(217, 119, 6, 0.26);
 
     --color-btn-danger-text: #dc2626;
-    --color-auth-bg-radial: radial-gradient(circle at 50% 15%, rgba(15, 81, 50, 0.15) 0%, rgba(232, 119, 26, 0.06) 50%, transparent 75%);
-    --color-metric-icon-bg: rgba(15, 81, 50, 0.08);
-    --color-metric-icon-border: rgba(15, 81, 50, 0.18);
+    --color-auth-bg-radial: radial-gradient(circle at 50% 15%, rgba(45, 106, 79, 0.12) 0%, rgba(244, 247, 244, 0.98) 65%);
+    --color-metric-icon-bg: rgba(27, 67, 50, 0.06);
+    --color-metric-icon-border: rgba(27, 67, 50, 0.14);
     --color-empty-state-bg: #ffffff;
 
-    /* Sombras Suaves e Orgânicas */
-    --shadow-sm: 0 1px 2px 0 rgba(10, 30, 20, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(10, 30, 20, 0.08), 0 2px 4px -2px rgba(10, 30, 20, 0.04);
-    --shadow-lg: 0 10px 15px -3px rgba(10, 30, 20, 0.1), 0 4px 6px -4px rgba(10, 30, 20, 0.04);
-    --shadow-xl: 0 20px 25px -5px rgba(10, 30, 20, 0.12), 0 8px 10px -6px rgba(10, 30, 20, 0.05);
-    --shadow-glow-primary: 0 0 18px rgba(15, 81, 50, 0.22);
-    --shadow-glow-danger: 0 0 18px rgba(220, 38, 38, 0.18);
+    /* Sombras Orgânicas */
+    --shadow-sm: 0 1px 2px 0 rgba(12, 26, 17, 0.06);
+    --shadow-md: 0 4px 8px -2px rgba(12, 26, 17, 0.08);
+    --shadow-lg: 0 10px 18px -4px rgba(12, 26, 17, 0.1);
+    --shadow-xl: 0 18px 26px -6px rgba(12, 26, 17, 0.12);
+    --shadow-glow-primary: 0 0 14px rgba(45, 106, 79, 0.18);
+    --shadow-glow-danger: 0 0 14px rgba(220, 38, 38, 0.14);
 }
