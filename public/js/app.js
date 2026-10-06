@@ -796,9 +796,12 @@ async function exportProjectToPdf(projectId) {
                     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
                     body { color: #1e293b; background: #ffffff; font-size: 11pt; line-height: 1.45; }
                     
-                    .header { border-bottom: 2px solid #0b4628; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; }
-                    .brand { font-size: 16pt; font-weight: 800; color: #0b4628; }
-                    .brand span { color: #e8771a; font-weight: 600; font-size: 11pt; margin-left: 6px; }
+                    .header { border-bottom: 2px solid #0b4628; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+                    .header-brand-block { display: flex; align-items: center; gap: 14px; }
+                    .header-logo { height: 52px; width: auto; border-radius: 6px; display: block; }
+                    .brand { font-size: 15pt; font-weight: 800; color: #0b4628; line-height: 1.2; }
+                    .brand span { color: #e8771a; font-weight: 600; font-size: 10.5pt; margin-left: 6px; }
+                    .brand-sub { font-size: 8.5pt; color: #64748b; font-weight: 500; margin-top: 2px; }
                     .emission-meta { font-size: 8.5pt; color: #64748b; text-align: right; }
 
                     .title-section { margin-bottom: 16px; }
@@ -822,10 +825,12 @@ async function exportProjectToPdf(projectId) {
                     .info-card h4 { font-size: 8.5pt; text-transform: uppercase; color: #64748b; margin-bottom: 6px; font-weight: 700; letter-spacing: 0.03em; }
                     .info-card p { font-size: 9.5pt; color: #1e293b; }
 
-                    .resp-item { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px dashed #cbd5e1; }
+                    .resp-item, .loc-item { margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px dashed #cbd5e1; }
                     .resp-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
                     .resp-item strong { font-size: 9.5pt; color: #0f172a; }
                     .resp-sub { font-size: 8.5pt; color: #475569; }
+                    .loc-item { font-size: 9.5pt; color: #1e293b; line-height: 1.35; }
+                    .period-item { margin-top: 6px; font-size: 9.5pt; color: #1e293b; }
 
                     .progress-box { margin-bottom: 16px; }
                     .progress-header { display: flex; justify-content: space-between; font-size: 8.5pt; font-weight: 700; margin-bottom: 4px; }
@@ -848,7 +853,13 @@ async function exportProjectToPdf(projectId) {
             </head>
             <body>
                 <div class="header">
-                    <div class="brand">Poma<span>&bull; Inteligência Agrícola</span></div>
+                    <div class="header-brand-block">
+                        <img src="${window.location.origin}/img/logo-branco-peres-print.png" alt="Branco Peres Agribusiness" class="header-logo">
+                        <div>
+                            <div class="brand">Branco Peres<span>&bull; Agribusiness</span></div>
+                            <div class="brand-sub">Poma &bull; Inteligência Agrícola</div>
+                        </div>
+                    </div>
                     <div class="emission-meta">
                         <div>Relatório Técnico de Projeto</div>
                         <div>Emitido em: ${emissionDate}</div>
@@ -880,8 +891,14 @@ async function exportProjectToPdf(projectId) {
 
                     <div class="info-card">
                         <h4>Local(ais) e Período de Execução</h4>
-                        <p style="margin-bottom: 6px;"><strong>Locais:</strong> ${locations.map(l => escapeHtml(l.name)).join(', ')}</p>
-                        <p><strong>Período:</strong> ${startDateFmt} até ${endDateFmt}</p>
+                        ${locations.map(l => `
+                            <div class="loc-item">
+                                <div>${escapeHtml(l.name || 'Não informado')}</div>
+                            </div>
+                        `).join('')}
+                        <div class="period-item">
+                            <strong>Período:</strong> ${startDateFmt} até ${endDateFmt}
+                        </div>
                     </div>
                 </div>
 
@@ -945,7 +962,7 @@ async function exportProjectToPdf(projectId) {
                         <div>Assinatura do Responsável</div>
                     </div>
                     <div class="sig-line">
-                        <strong>Poma - Projetos em Inteligência Agrícola</strong>
+                        <strong>Branco Peres Agribusiness</strong>
                         <div>Validação e Controle Operacional • Metodologia PAAM</div>
                     </div>
                 </div>
@@ -954,13 +971,23 @@ async function exportProjectToPdf(projectId) {
         `);
         doc.close();
 
-        setTimeout(() => {
+        const triggerPrint = () => {
             iframe.contentWindow.focus();
             iframe.contentWindow.print();
             setTimeout(() => {
-                document.body.removeChild(iframe);
+                if (iframe.parentNode) {
+                    document.body.removeChild(iframe);
+                }
             }, 1000);
-        }, 300);
+        };
+
+        const logoImg = doc.querySelector('.header-logo');
+        if (logoImg && !logoImg.complete) {
+            logoImg.onload = () => setTimeout(triggerPrint, 150);
+            logoImg.onerror = () => setTimeout(triggerPrint, 150);
+        } else {
+            setTimeout(triggerPrint, 300);
+        }
 
     } catch (error) {
         Toast.show('Erro ao exportar PDF: ' + error.message, 'error');
