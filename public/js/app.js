@@ -798,9 +798,8 @@ async function exportProjectToPdf(projectId) {
                     
                     .header { border-bottom: 2px solid #0b4628; padding-bottom: 12px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
                     .header-brand-block { display: flex; align-items: center; gap: 14px; }
-                    .header-logo { height: 52px; width: auto; border-radius: 6px; display: block; }
+                    .header-logo { height: 48px; width: auto; display: block; object-fit: contain; }
                     .brand { font-size: 15pt; font-weight: 800; color: #0b4628; line-height: 1.2; }
-                    .brand span { color: #e8771a; font-weight: 600; font-size: 10.5pt; margin-left: 6px; }
                     .brand-sub { font-size: 8.5pt; color: #64748b; font-weight: 500; margin-top: 2px; }
                     .emission-meta { font-size: 8.5pt; color: #64748b; text-align: right; }
 
@@ -856,7 +855,7 @@ async function exportProjectToPdf(projectId) {
                     <div class="header-brand-block">
                         <img src="${window.location.origin}/img/logo-branco-peres-print.png" alt="Branco Peres Agribusiness" class="header-logo">
                         <div>
-                            <div class="brand">Branco Peres<span>&bull; Agribusiness</span></div>
+                            <div class="brand">Branco Peres Agribusiness</div>
                             <div class="brand-sub">Poma &bull; Inteligência Agrícola</div>
                         </div>
                     </div>
